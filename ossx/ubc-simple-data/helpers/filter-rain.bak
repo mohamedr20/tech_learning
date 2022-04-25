@@ -188,15 +188,7 @@
 (check-expect (onscreen? (make-drop 2    HEIGHT))    true)
 (check-expect (onscreen? (make-drop 2 (+ HEIGHT 1))) false)
 
-(check-expect (render (make-game empty empty (make-tank 50 1)))
-              (place-image/align TANK 50 HEIGHT "left" "bottom" BACKGROUND))
-(check-expect (render (make-game empty (list (make-missile 100 200)) (make-tank 50 1)))
-              (place-image/align MISSILE 100 200 "left" "bottom"
-                                 (place-image/align TANK 50 HEIGHT "left" "bottom" BACKGROUND)))
-(check-expect (render (make-game (list (make-invader 150 100 1.5)) (list (make-missile 100 200)) (make-tank 50 1)))
-              (place-image/align INVADER 150 100 "left" "bottom"
-                                 (place-image/align MISSILE 100 200 "left" "bottom"
-                                                    (place-image/align TANK 50 HEIGHT "left" "bottom" BACKGROUND))))
+
 (define (onscreen? d)  
   (<= 0 (drop-y d) HEIGHT))
 
