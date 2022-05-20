@@ -59,8 +59,7 @@ const register = async (req, res, next) => {
             passwordhash: encryptedPassword,
             ...req.body
         });
-        console.log(user);
-        const token = jsonwebtoken_1.default.sign({ ...req.body }, "jwt-secret", {
+        const token = jsonwebtoken_1.default.sign({ userId: user[0].id, ...req.body }, "jwt-secret", {
             expiresIn: "6h"
         });
         return res.json({ token });
@@ -85,10 +84,12 @@ const login = async (req, res, next) => {
         const user = await UserService.findUserByEmail(userInput.email);
         if (!user)
             next(new HttpException_1.default(404, "Unable to find user for this email address"));
-        const hashedPassword = await bcrypt_1.default.hash(userInput.password, 10);
-        const comparePassword = await bcrypt_1.default.compare(hashedPassword, user.passwordhash);
+        console.log(user);
+        const comparePassword = await bcrypt_1.default.compare(userInput.password, user.passwordhash);
         if (!comparePassword)
-            next(new HttpException_1.default(403, "Unable to log in with this password"));
+            res.json({
+                error: new HttpException_1.default(403, "Unable to log in with this password")
+            });
         const token = jsonwebtoken_1.default.sign({ user_id: user.id }, "jwt-secret", {
             expiresIn: "6h"
         });

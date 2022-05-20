@@ -41,7 +41,7 @@ exports.findUserById = findUserById;
 const findUserByEmail = async (email) => {
     try {
         const user = await dbInstance("users")
-            .first("id", "email", "firstname", "created_at", "updated_at")
+            .first("id", "email", "passwordhash", "firstname", "created_at", "updated_at")
             .where("email", "=", email);
         return user;
     }

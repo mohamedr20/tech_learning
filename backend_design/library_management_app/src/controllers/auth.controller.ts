@@ -4,6 +4,20 @@ import HttpException from "../exceptions/HttpException";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+interface loginUserRequest {
+  email: string;
+  password: string;
+}
+
+interface registerUserRequest {
+  email: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+  date_of_birth: Date;
+}
+
 const register = async (
   req: Request,
   res: Response,
