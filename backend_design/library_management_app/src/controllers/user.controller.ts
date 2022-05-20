@@ -49,8 +49,8 @@ const updateUser = async (
 const findUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
-    const user: User[] = await UserService.findUserById(id);
-    return res.json({ data: user[0] }).status(200);
+    const user = await UserService.findUserById(id);
+    return res.json({ data: user }).status(200);
   } catch (err) {
     throw err;
   }

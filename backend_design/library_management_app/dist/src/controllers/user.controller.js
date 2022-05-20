@@ -23,26 +23,54 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAUser = exports.findAllUsers = void 0;
+exports.deleteUser = exports.findUser = exports.updateUser = exports.findAllUsers = void 0;
 const UserService = __importStar(require("../services/user.service"));
-const findAllUsers = async (req, res) => {
+const findAllUsers = async (req, res, next) => {
     try {
         const users = await UserService.findUsers();
-        res.json({ data: users });
+        return res.json({ data: users });
     }
     catch (err) {
+        next(err);
         throw err;
     }
 };
 exports.findAllUsers = findAllUsers;
-const updateAUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const updateUser = await UserService.updateUser(id, req.body);
-        res.json({ data: updateUser });
+        const updateUserResult = await UserService.updateUser(id, req.body);
+        if (updateUserResult === 1)
+            return res.json({ data: updateUserResult }).status(200);
+        else {
+            return res.json({ data: updateUserResult }).status(404);
+        }
+    }
+    catch (err) {
+        next(err);
+        throw err;
+    }
+};
+exports.updateUser = updateUser;
+const findUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await UserService.findUserById(id);
+        return res.json({ data: user }).status(200);
     }
     catch (err) {
         throw err;
     }
 };
-exports.updateAUser = updateAUser;
+exports.findUser = findUser;
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteUserResult = await UserService.deleteUserById(id);
+        return res.json({ data: deleteUserResult }).status(200);
+    }
+    catch (err) {
+        throw err;
+    }
+};
+exports.deleteUser = deleteUser;

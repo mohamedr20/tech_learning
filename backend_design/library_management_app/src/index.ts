@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import userRoutes from "../src/routes/user.routes";
+import authRoutes from "../src/routes/auth.routes";
 import myLogger from "../src/middleware/logger";
 import errorMiddleware from "./middleware/error";
 
@@ -13,6 +14,8 @@ app.use(express.urlencoded());
 
 app.use(myLogger);
 app.use(errorMiddleware);
+
+app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 
 app.get("/health", (req: Request, res: Response) => {
