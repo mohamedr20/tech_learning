@@ -63,12 +63,6 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable("books", (table) => {
     table.increments("id").primary().notNullable();
-    table
-      .integer("category_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("book_category");
     table.string("title", 50);
     table.string("description", 150);
     table.dateTime("publication_date");

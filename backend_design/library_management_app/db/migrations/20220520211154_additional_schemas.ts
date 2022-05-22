@@ -21,7 +21,6 @@ export async function up(knex: Knex): Promise<void> {
   });
 
   await knex.schema.createTable("book_category", (table) => {
-    table.increments("id").primary().notNullable();
     table.string("category_name").notNullable().unique();
     createDefaultColumns(knex, table);
   });
