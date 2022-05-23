@@ -43,16 +43,10 @@ export async function up(knex: Knex): Promise<void> {
   });
 
   await knex.schema.alterTable("users", (table) => {
-    table
-      .integer("address_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("address");
+    table.integer("address_id").unsigned().references("id").inTable("address");
     table
       .integer("card_id")
       .unsigned()
-      .notNullable()
       .references("id")
       .inTable("library_card");
     table.renameColumn("firstname", "first_name");

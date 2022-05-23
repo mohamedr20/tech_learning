@@ -53,10 +53,7 @@ const register = async (req, res, next) => {
         let encryptedPassword = await bcrypt_1.default.hash(password, 10);
         delete req.body.password;
         const user = await UserService.insertUser({
-            firstname,
-            lastname,
-            email,
-            passwordhash: encryptedPassword,
+            password_hash: encryptedPassword,
             ...req.body
         });
         const token = jsonwebtoken_1.default.sign({ userId: user[0].id, ...req.body }, "jwt-secret", {
@@ -85,7 +82,7 @@ const login = async (req, res, next) => {
         if (!user)
             next(new HttpException_1.default(404, "Unable to find user for this email address"));
         console.log(user);
-        const comparePassword = await bcrypt_1.default.compare(userInput.password, user.passwordhash);
+        const comparePassword = await bcrypt_1.default.compare(userInput.password, user.password_hash);
         if (!comparePassword)
             res.json({
                 error: new HttpException_1.default(403, "Unable to log in with this password")

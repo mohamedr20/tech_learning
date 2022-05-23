@@ -22,7 +22,7 @@ const register = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<Response> => {
+): Promise<Response | HttpException> => {
   try {
     // Get User input
     // Validate user input
@@ -30,10 +30,10 @@ const register = async (
     // encrypt the user's password
     // create the user in the db
     // create a signed jwt token
-    const { firstname, lastname, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
 
     // Validate user input
-    if (!(email && password && firstname && lastname)) {
+    if (!(email && password && first_name && last_name)) {
       res.status(400).send("All input is required");
     }
 
@@ -41,17 +41,17 @@ const register = async (
     console.log(`old user ${JSON.stringify(oldUser)}`);
     if (oldUser) {
       console.log("user is old");
-      return res.status(409).send("User already exsists for this email");
+      return res.json({
+        statusCode: 409,
+        message: "User already exsists for this email address"
+      });
     }
 
     let encryptedPassword = await bcrypt.hash(password, 10);
 
     delete req.body.password;
     const user = await UserService.insertUser({
-      firstname,
-      lastname,
-      email,
-      passwordhash: encryptedPassword,
+      password_hash: encryptedPassword,
       ...req.body
     });
 
@@ -92,7 +92,7 @@ const login = async (
     console.log(user);
     const comparePassword = await bcrypt.compare(
       userInput.password,
-      user.passwordhash
+      user.password_hash
     );
 
     if (!comparePassword)

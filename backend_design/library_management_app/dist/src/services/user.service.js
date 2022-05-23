@@ -9,7 +9,7 @@ const knex_1 = __importDefault(require("knex"));
 const dbInstance = (0, knex_1.default)(knexfile_1.default["development"]);
 const findUsers = async () => {
     const users = await dbInstance
-        .select("id", "email", "firstname", "created_at", "updated_at")
+        .select("id", "email", "first_name", "created_at", "updated_at")
         .from("users");
     return users;
 };
@@ -29,7 +29,7 @@ exports.updateUser = updateUser;
 const findUserById = async (id) => {
     try {
         const user = await dbInstance("users")
-            .select("id", "email", "firstname", "created_at", "updated_at")
+            .select("id", "email", "first_name", "created_at", "updated_at")
             .where("id", "=", id);
         return user;
     }
@@ -41,7 +41,7 @@ exports.findUserById = findUserById;
 const findUserByEmail = async (email) => {
     try {
         const user = await dbInstance("users")
-            .first("id", "email", "passwordhash", "firstname", "created_at", "updated_at")
+            .first("id", "email", "password_hash", "first_name", "created_at", "updated_at")
             .where("email", "=", email);
         return user;
     }
@@ -52,6 +52,7 @@ const findUserByEmail = async (email) => {
 exports.findUserByEmail = findUserByEmail;
 const insertUser = async (userInput) => {
     try {
+        console.log(userInput);
         const createUserResult = await dbInstance("users").insert({ ...userInput }, "id");
         return createUserResult;
     }

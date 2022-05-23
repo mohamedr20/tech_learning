@@ -6,7 +6,7 @@ interface User {
   firstname: string;
   lastname: string;
   email: string;
-  passwordhash: string;
+  password_hash: string;
   phone: string;
   date_of_birth: Date;
   created_at: Date;
@@ -25,7 +25,7 @@ const dbInstance = knex(dbConfig["development"]);
 
 const findUsers = async () => {
   const users = await dbInstance
-    .select("id", "email", "firstname", "created_at", "updated_at")
+    .select("id", "email", "first_name", "created_at", "updated_at")
     .from("users");
   return users;
 };
@@ -48,7 +48,7 @@ const findUserById = async (id: string) => {
       .select<Partial<User>>(
         "id",
         "email",
-        "firstname",
+        "first_name",
         "created_at",
         "updated_at"
       )
@@ -65,8 +65,8 @@ const findUserByEmail = async (email: string) => {
       .first<User>(
         "id",
         "email",
-        "passwordhash",
-        "firstname",
+        "password_hash",
+        "first_name",
         "created_at",
         "updated_at"
       )
@@ -79,6 +79,7 @@ const findUserByEmail = async (email: string) => {
 
 const insertUser = async (userInput: Partial<User>) => {
   try {
+    console.log(userInput);
     const createUserResult = await dbInstance("users").insert(
       { ...userInput },
       "id"
