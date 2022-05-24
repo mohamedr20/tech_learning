@@ -8,7 +8,7 @@ enum UserStatus {
 interface User {
   id: number;
   email: string;
-  password: string;
+  password_hash: string;
   first_name: string;
   last_name: string;
   username: string;
@@ -21,8 +21,7 @@ interface User {
 
 interface LibraryCard {
   id: number;
-  libraryId: number;
-  userId: number;
+  library_id: number;
   card_number: string;
   member_status: UserStatus;
 }
@@ -46,4 +45,22 @@ interface Address {
   zip_code: string;
 }
 
-export { UserStatus, User, Library, LibraryCard, Address };
+interface Book {
+  id: number;
+  title: string;
+  description: string;
+  publication_date: Date;
+  isbn: string;
+  is_best_seller: boolean;
+  is_reference: boolean;
+}
+
+interface Author {
+  id: number;
+  book_id: number;
+  name: string;
+  description: string;
+  is_best_seller: boolean;
+}
+
+export { UserStatus, User, Library, LibraryCard, Address, Book, Author };

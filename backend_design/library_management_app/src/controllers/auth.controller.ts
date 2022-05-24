@@ -85,11 +85,11 @@ const login = async (
     const user = await UserService.findUserByEmail(userInput.email);
 
     if (!user)
-      next(
-        new HttpException(404, "Unable to find user for this email address")
+      throw new HttpException(
+        404,
+        "Unable to find user for this email address"
       );
 
-    console.log(user);
     const comparePassword = await bcrypt.compare(
       userInput.password,
       user.password_hash

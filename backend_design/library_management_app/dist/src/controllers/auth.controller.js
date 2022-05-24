@@ -39,16 +39,19 @@ const register = async (req, res, next) => {
         // encrypt the user's password
         // create the user in the db
         // create a signed jwt token
-        const { firstname, lastname, email, password } = req.body;
+        const { first_name, last_name, email, password } = req.body;
         // Validate user input
-        if (!(email && password && firstname && lastname)) {
+        if (!(email && password && first_name && last_name)) {
             res.status(400).send("All input is required");
         }
         const oldUser = await UserService.findUserByEmail(email);
         console.log(`old user ${JSON.stringify(oldUser)}`);
         if (oldUser) {
             console.log("user is old");
-            return res.status(409).send("User already exsists for this email");
+            return res.json({
+                statusCode: 409,
+                message: "User already exsists for this email address"
+            });
         }
         let encryptedPassword = await bcrypt_1.default.hash(password, 10);
         delete req.body.password;
@@ -80,8 +83,7 @@ const login = async (req, res, next) => {
             next(new HttpException_1.default(403, "Password required for login"));
         const user = await UserService.findUserByEmail(userInput.email);
         if (!user)
-            next(new HttpException_1.default(404, "Unable to find user for this email address"));
-        console.log(user);
+            throw new HttpException_1.default(404, "Unable to find user for this email address");
         const comparePassword = await bcrypt_1.default.compare(userInput.password, user.password_hash);
         if (!comparePassword)
             res.json({

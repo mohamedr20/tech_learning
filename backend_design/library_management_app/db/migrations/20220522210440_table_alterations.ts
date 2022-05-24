@@ -3,7 +3,7 @@ import { createDefaultColumns } from "../../src/utils/db";
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.alterTable("author", (table) => {
-    table.string("description", 150);
+    table.string("description", 250);
     table.boolean("is_best_seller");
   });
 

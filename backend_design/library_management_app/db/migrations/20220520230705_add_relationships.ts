@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
       .references("id")
       .inTable("library_business_hours");
     table.string("name", 50).unique().notNullable();
-    table.string("description", 150);
+    table.string("description", 250);
     table.string("phone", 50);
     table.boolean("is_closed").notNullable();
     createDefaultColumns(knex, table);
@@ -31,12 +31,6 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references("id")
       .inTable("library");
-    table
-      .integer("user_id")
-      .unsigned()
-      .notNullable()
-      .references("id")
-      .inTable("users");
     table.uuid("card_number");
     table.string("member_status");
     createDefaultColumns(knex, table);
@@ -57,8 +51,8 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable("books", (table) => {
     table.increments("id").primary().notNullable();
-    table.string("title", 50);
-    table.string("description", 150);
+    table.string("title", 150);
+    table.string("description", 250);
     table.dateTime("publication_date");
     table.uuid("isbn").unique().notNullable();
     table.boolean("is_best_seller");
