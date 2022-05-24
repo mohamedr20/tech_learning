@@ -1,50 +1,30 @@
 import dbConfig from "../../knexfile";
 import knex from "knex";
+import { Book } from "../utils/interfaces";
 
-interface User {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  password_hash: string;
-  phone: string;
-  date_of_birth: Date;
-  created_at: Date;
-  updated_at: Date;
-}
-
-interface updateUserDTO {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  date_of_birth?: Date;
+interface updateBookDTO {
+  title: string;
+  description: string;
+  publication_date: Date;
+  is_best_seller: boolean;
+  is_reference: boolean;
 }
 
 const dbInstance = knex(dbConfig["development"]);
 
-const createBook = async (userInput: Partial<User>) => {
-  try {
-    const createUserResult = await dbInstance("users").insert(
-      { ...userInput },
-      "id"
-    );
-    return createUserResult;
-  } catch (err) {
-    throw err;
-  }
+const createBook = async (bookInput: Partial<Book>): Promise<number[]> => {
+  const createBookResult = await dbInstance("books")
+    .insert({ ...bookInput })
+    .returning(["id"]);
+  return createBookResult;
 };
 
-const updateBook = async (id: string, updateBody: updateUserDTO) => {
-  try {
-    const updateResult = await dbInstance<User>("users")
-      .where("id", "=", id)
-      .update({ ...updateBody });
+const updateBook = async (id: string, updateBody: updateBookDTO) => {
+  const updateResult = await dbInstance<Book>("books")
+    .where("id", "=", id)
+    .update({ ...updateBody });
 
-    return updateResult;
-  } catch (err) {
-    throw err;
-  }
+  return updateResult;
 };
 
 const findBooks = async () => {
@@ -57,13 +37,7 @@ const findBooks = async () => {
 const findBookByAuthor = async (id: string) => {
   try {
     const user = await dbInstance("users")
-      .select<Partial<User>>(
-        "id",
-        "email",
-        "first_name",
-        "created_at",
-        "updated_at"
-      )
+      .select("id", "email", "first_name", "created_at", "updated_at")
       .where("id", "=", id);
     return user;
   } catch (err) {
@@ -74,13 +48,7 @@ const findBookByAuthor = async (id: string) => {
 const findBookByTitle = async (id: string) => {
   try {
     const user = await dbInstance("users")
-      .select<Partial<User>>(
-        "id",
-        "email",
-        "first_name",
-        "created_at",
-        "updated_at"
-      )
+      .select("id", "email", "first_name", "created_at", "updated_at")
       .where("id", "=", id);
     return user;
   } catch (err) {
@@ -91,13 +59,7 @@ const findBookByTitle = async (id: string) => {
 const findBookByPublicationDate = async (id: string) => {
   try {
     const user = await dbInstance("users")
-      .select<Partial<User>>(
-        "id",
-        "email",
-        "first_name",
-        "created_at",
-        "updated_at"
-      )
+      .select("id", "email", "first_name", "created_at", "updated_at")
       .where("id", "=", id);
     return user;
   } catch (err) {
@@ -108,13 +70,7 @@ const findBookByPublicationDate = async (id: string) => {
 const findBookByCategory = async (id: string) => {
   try {
     const user = await dbInstance("users")
-      .select<Partial<User>>(
-        "id",
-        "email",
-        "first_name",
-        "created_at",
-        "updated_at"
-      )
+      .select("id", "email", "first_name", "created_at", "updated_at")
       .where("id", "=", id);
     return user;
   } catch (err) {
@@ -123,14 +79,10 @@ const findBookByCategory = async (id: string) => {
 };
 
 const deleteBook = async (id: string) => {
-  try {
-    const deleteResult = await dbInstance<User>("users")
-      .where("id", "=", id)
-      .del();
-    return deleteResult;
-  } catch (err) {
-    throw err;
-  }
+  const deleteResult = await dbInstance<Book>("books")
+    .where("id", "=", id)
+    .del();
+  return deleteResult;
 };
 
 export {

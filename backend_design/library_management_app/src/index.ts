@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import userRoutes from "../src/routes/user.routes";
 import authRoutes from "../src/routes/auth.routes";
+import bookRoutes from "../src/routes/book.routes";
 import myLogger from "../src/middleware/logger";
 import errorMiddleware from "./middleware/error";
 
@@ -17,6 +18,7 @@ app.use(errorMiddleware);
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/books", bookRoutes);
 
 app.get("/health", (req: Request, res: Response) => {
   res.json({ status: "Healthy" });

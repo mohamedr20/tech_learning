@@ -24,17 +24,6 @@ import {
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
 
-  // await knex("author").join("books", "books.id", "author.book_id").del();
-  // await knex("library")
-  //   .join("address", "address.id", "library.address_id")
-  //   .del();
-  // await knex("users")
-  //   .join("library_card", "library_card.id", "users.card_id")
-  //   .del();
-  // await knex("library_card")
-  //   .join("library", "library.id", "library_card.library_id")
-  //   .del();
-
   await knex("library_card").del();
   await knex("library").del();
   await knex("users").del();

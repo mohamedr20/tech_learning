@@ -1,17 +1,7 @@
 import * as BookService from "../services/book.service";
 import { NextFunction, Request, Response } from "express";
-
-interface Book {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password_hash: string;
-  phone: string;
-  date_of_birth: Date;
-  created_at: Date;
-  updated_at: Date;
-}
+import { Book } from "../utils/interfaces";
+import HttpException from "../exceptions/HttpException";
 
 const search = async (
   req: Request,
@@ -28,43 +18,62 @@ const search = async (
   }
 };
 
-const getBook = async (req: Request, res: Response): Promise<Response> => {
+const getBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   try {
     // const { id } = req.params;
     // const deleteUserResult: number = await UserService.deleteUserById(id);
     // return res.json({ data: deleteUserResult }).status(200);
     return res.json({});
   } catch (err) {
-    throw err;
+    next(err);
   }
+};
+
+const validateUpdateRequest = (updateBody: Partial<Book>) => {
+  const validKeys = [
+    "title",
+    "description",
+    "publication_date",
+    "isbn",
+    "is_best_seller",
+    "is_reference"
+  ];
+  const isValidKey = (currentKey: string) => validKeys.indexOf(currentKey) > -1;
+  return Object.keys(updateBody).every(isValidKey);
 };
 
 const updateBook = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<Response> => {
+): Promise<Response | void> => {
   try {
-    // const { id } = req.params;
-    // const updateUserResult: number = await UserService.updateUser(id, req.body);
-    // if (updateUserResult === 1)
-    //   return res.json({ data: updateUserResult }).status(200);
-    // else {
-    //   return res.json({ data: updateUserResult }).status(404);
-    // }
-    return res.json({});
+    const { id } = req.params;
+
+    console.log(req.body);
+    console.log(Object.keys(req.body));
+    if (validateUpdateRequest(req.body) === false) {
+      return res.json({
+        status: 409,
+        message: "Payload has an invalid format"
+      });
+    }
+    const updateUserResult: number = await BookService.updateBook(id, req.body);
+
+    return res.json({ data: updateUserResult }).status(200);
   } catch (err) {
     next(err);
-    throw err;
   }
 };
 
 const createBook = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // const { id } = req.params;
-    // const user = await UserService.findUserById(id);
-    // return res.json({ data: user }).status(200);
-    return res.json({});
+    const createBookResult = await BookService.createBook(req.body);
+    return res.json({ data: createBookResult }).status(201);
   } catch (err) {
     throw err;
   }
@@ -72,10 +81,9 @@ const createBook = async (req: Request, res: Response): Promise<Response> => {
 
 const deleteBook = async (req: Request, res: Response): Promise<Response> => {
   try {
-    // const { id } = req.params;
-    // const deleteUserResult: number = await UserService.deleteUserById(id);
-    // return res.json({ data: deleteUserResult }).status(200);
-    return res.json({});
+    const { id } = req.params;
+    const deleteUserResult: number = await BookService.deleteBook(id);
+    return res.json({ data: deleteUserResult }).status(200);
   } catch (err) {
     throw err;
   }

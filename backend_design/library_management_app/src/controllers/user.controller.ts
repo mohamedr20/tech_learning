@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from "express";
 
 interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  passwordHash: string;
+  password_hash: string;
   phone: string;
   date_of_birth: Date;
   created_at: Date;
