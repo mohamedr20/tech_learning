@@ -12,26 +12,49 @@ interface updateBookDTO {
 
 const dbInstance = knex(dbConfig["development"]);
 
-const createBook = async (bookInput: Partial<Book>): Promise<number[]> => {
-  const createBookResult = await dbInstance("books")
-    .insert({ ...bookInput })
-    .returning(["id"]);
-  return createBookResult;
+const createBook = async (
+  bookInput: Partial<Book>
+): Promise<number[] | void> => {
+  try {
+    const createBookResult = await dbInstance("books")
+      .insert({ ...bookInput })
+      .returning(["id"]);
+    return createBookResult;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      throw err;
+    }
+  }
 };
 
-const updateBook = async (id: string, updateBody: updateBookDTO) => {
-  const updateResult = await dbInstance<Book>("books")
-    .where("id", "=", id)
-    .update({ ...updateBody });
+const updateBook = async (
+  id: string,
+  updateBody: updateBookDTO
+): Promise<number | void> => {
+  try {
+    const updateResult = await dbInstance<Book>("books")
+      .where("id", "=", id)
+      .update({ ...updateBody });
 
-  return updateResult;
+    return updateResult;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      throw err;
+    }
+  }
 };
 
 const findBooks = async () => {
-  const users = await dbInstance
-    .select("id", "email", "first_name", "created_at", "updated_at")
-    .from("users");
-  return users;
+  try {
+    const users = await dbInstance
+      .select("id", "email", "first_name", "created_at", "updated_at")
+      .from("users");
+    return users;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      throw err;
+    }
+  }
 };
 
 const findBookByAuthor = async (id: string) => {
@@ -40,8 +63,10 @@ const findBookByAuthor = async (id: string) => {
       .select("id", "email", "first_name", "created_at", "updated_at")
       .where("id", "=", id);
     return user;
-  } catch (err) {
-    throw err;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      throw err;
+    }
   }
 };
 
@@ -78,11 +103,17 @@ const findBookByCategory = async (id: string) => {
   }
 };
 
-const deleteBook = async (id: string) => {
-  const deleteResult = await dbInstance<Book>("books")
-    .where("id", "=", id)
-    .del();
-  return deleteResult;
+const deleteBook = async (id: string): Promise<number | void> => {
+  try {
+    const deleteResult = await dbInstance<Book>("books")
+      .where("id", "=", id)
+      .del();
+    return deleteResult;
+  } catch (err) {
+    if (err instanceof Error) {
+      throw err;
+    }
+  }
 };
 
 export {

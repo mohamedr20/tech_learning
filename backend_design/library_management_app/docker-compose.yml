@@ -4,22 +4,24 @@ services:
   postgres:
     image: postgres:14-alpine
     ports:
-      - 5432:5432
+      - ${DB_PORT}:${DB_PORT}
     environment:
       POSTGRES_DB: lib_management_db
       POSTGRES_HOST_AUTH_METHOD: trust
-
   backend:
     build: .
     depends_on:
       - postgres
     ports:
-      - 8000:8000
+      - ${PORT}:${PORT}
       - 9229:9229 # debugger port
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: yarn start:docker
     environment:
-      DATABASE_URL: postgres://postgres:password@postgres/lib_management_db
-      PORT: 8000
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: ${PORT}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}

@@ -62,9 +62,16 @@ const updateBook = async (
         message: "Payload has an invalid format"
       });
     }
-    const updateUserResult: number = await BookService.updateBook(id, req.body);
+    const updateBookResult: number | void = await BookService.updateBook(
+      id,
+      req.body
+    );
 
-    return res.json({ data: updateUserResult }).status(200);
+    if (updateBookResult) {
+      return res.json({ data: updateBookResult }).status(200);
+    }
+
+    return res.json({ statusCode: 404, message: "Unable to update this book" });
   } catch (err) {
     next(err);
   }
@@ -82,8 +89,8 @@ const createBook = async (req: Request, res: Response): Promise<Response> => {
 const deleteBook = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
-    const deleteUserResult: number = await BookService.deleteBook(id);
-    return res.json({ data: deleteUserResult }).status(200);
+    const deleteBookResult: number | void = await BookService.deleteBook(id);
+    return res.json({ data: deleteBookResult }).status(200);
   } catch (err) {
     throw err;
   }

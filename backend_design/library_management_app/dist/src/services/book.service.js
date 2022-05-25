@@ -7,26 +7,18 @@ exports.deleteBook = exports.findBookByCategory = exports.findBookByAuthor = exp
 const knexfile_1 = __importDefault(require("../../knexfile"));
 const knex_1 = __importDefault(require("knex"));
 const dbInstance = (0, knex_1.default)(knexfile_1.default["development"]);
-const createBook = async (userInput) => {
-    try {
-        const createUserResult = await dbInstance("users").insert({ ...userInput }, "id");
-        return createUserResult;
-    }
-    catch (err) {
-        throw err;
-    }
+const createBook = async (bookInput) => {
+    const createBookResult = await dbInstance("books")
+        .insert({ ...bookInput })
+        .returning(["id"]);
+    return createBookResult;
 };
 exports.createBook = createBook;
 const updateBook = async (id, updateBody) => {
-    try {
-        const updateResult = await dbInstance("users")
-            .where("id", "=", id)
-            .update({ ...updateBody });
-        return updateResult;
-    }
-    catch (err) {
-        throw err;
-    }
+    const updateResult = await dbInstance("books")
+        .where("id", "=", id)
+        .update({ ...updateBody });
+    return updateResult;
 };
 exports.updateBook = updateBook;
 const findBooks = async () => {
@@ -85,14 +77,9 @@ const findBookByCategory = async (id) => {
 };
 exports.findBookByCategory = findBookByCategory;
 const deleteBook = async (id) => {
-    try {
-        const deleteResult = await dbInstance("users")
-            .where("id", "=", id)
-            .del();
-        return deleteResult;
-    }
-    catch (err) {
-        throw err;
-    }
+    const deleteResult = await dbInstance("books")
+        .where("id", "=", id)
+        .del();
+    return deleteResult;
 };
 exports.deleteBook = deleteBook;
