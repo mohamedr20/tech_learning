@@ -19,6 +19,15 @@ interface Person {
   isLoggedIn?: boolean;
 }
 
+export function reverseWords(str: string): string {
+  // your code here
+  console.log(str.split(' '));
+  return 'Go for it';
+}
+
+console.log(reverseWords('The quick brown fox jumps over the lazy dog.'));
+// ehT kciuq nworb xof spmuj revo eht yzal .god'
+
 // We can also use objects as maps, if we use the Record type
 const ids: Record<number, string> = {
   10: 'a',
@@ -29,7 +38,7 @@ ids[30] = 'd';
 
 // We should let typescript infer types when it comes to loops
 for (let i = 0; i <= 10; i++) {
-  console.log(i);
+  //console.log(i);
 }
 
 const addOne: number[] = [1, 2, 3].map((a) => a + 1);

@@ -20,4 +20,5 @@ app.use(error_1.default);
 app.use("/auth", auth_routes_1.default);
 app.use("/users", user_routes_1.default);
 app.use("/books", book_routes_1.default);
+app.use("/");
 exports.default = app;

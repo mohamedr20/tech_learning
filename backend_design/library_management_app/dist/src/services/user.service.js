@@ -6,11 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertUser = exports.findUserByEmail = exports.deleteUserById = exports.findUserById = exports.updateUser = exports.findUsers = void 0;
 const knexfile_1 = __importDefault(require("../../knexfile"));
 const knex_1 = __importDefault(require("knex"));
+const user_repo_1 = __importDefault(require("../repo/user.repo"));
 const dbInstance = (0, knex_1.default)(knexfile_1.default["development"]);
 const findUsers = async () => {
-    const users = await dbInstance
-        .select("id", "email", "first_name", "created_at", "updated_at")
-        .from("users");
+    const userRepo = new user_repo_1.default(dbInstance, "users");
+    const users = await userRepo.find([
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+        "username"
+    ]);
     return users;
 };
 exports.findUsers = findUsers;

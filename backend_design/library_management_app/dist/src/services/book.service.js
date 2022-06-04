@@ -8,24 +8,45 @@ const knexfile_1 = __importDefault(require("../../knexfile"));
 const knex_1 = __importDefault(require("knex"));
 const dbInstance = (0, knex_1.default)(knexfile_1.default["development"]);
 const createBook = async (bookInput) => {
-    const createBookResult = await dbInstance("books")
-        .insert({ ...bookInput })
-        .returning(["id"]);
-    return createBookResult;
+    try {
+        const createBookResult = await dbInstance("books")
+            .insert({ ...bookInput })
+            .returning(["id"]);
+        return createBookResult;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            throw err;
+        }
+    }
 };
 exports.createBook = createBook;
 const updateBook = async (id, updateBody) => {
-    const updateResult = await dbInstance("books")
-        .where("id", "=", id)
-        .update({ ...updateBody });
-    return updateResult;
+    try {
+        const updateResult = await dbInstance("books")
+            .where("id", "=", id)
+            .update({ ...updateBody });
+        return updateResult;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            throw err;
+        }
+    }
 };
 exports.updateBook = updateBook;
 const findBooks = async () => {
-    const users = await dbInstance
-        .select("id", "email", "first_name", "created_at", "updated_at")
-        .from("users");
-    return users;
+    try {
+        const users = await dbInstance
+            .select("id", "email", "first_name", "created_at", "updated_at")
+            .from("users");
+        return users;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            throw err;
+        }
+    }
 };
 exports.findBooks = findBooks;
 const findBookByAuthor = async (id) => {
@@ -36,7 +57,9 @@ const findBookByAuthor = async (id) => {
         return user;
     }
     catch (err) {
-        throw err;
+        if (err instanceof Error) {
+            throw err;
+        }
     }
 };
 exports.findBookByAuthor = findBookByAuthor;
@@ -77,9 +100,16 @@ const findBookByCategory = async (id) => {
 };
 exports.findBookByCategory = findBookByCategory;
 const deleteBook = async (id) => {
-    const deleteResult = await dbInstance("books")
-        .where("id", "=", id)
-        .del();
-    return deleteResult;
+    try {
+        const deleteResult = await dbInstance("books")
+            .where("id", "=", id)
+            .del();
+        return deleteResult;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            throw err;
+        }
+    }
 };
 exports.deleteBook = deleteBook;

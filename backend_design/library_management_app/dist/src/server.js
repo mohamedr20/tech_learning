@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const port = process.env.PORT || 8000;
-app_1.default.get("/health", (req, res) => {
+app_1.default.get("/health", (_req, res) => {
     res.json({ status: "Healthy" });
 });
-app_1.default.get("/test", (req, res) => {
+app_1.default.get("/test", (_req, res) => {
     res.json({ status: "Test" });
 });
 app_1.default.listen(port, () => {

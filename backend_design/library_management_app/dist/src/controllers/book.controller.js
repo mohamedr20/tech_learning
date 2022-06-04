@@ -72,8 +72,11 @@ const updateBook = async (req, res, next) => {
                 message: "Payload has an invalid format"
             });
         }
-        const updateUserResult = await BookService.updateBook(id, req.body);
-        return res.json({ data: updateUserResult }).status(200);
+        const updateBookResult = await BookService.updateBook(id, req.body);
+        if (updateBookResult) {
+            return res.json({ data: updateBookResult }).status(200);
+        }
+        return res.json({ statusCode: 404, message: "Unable to update this book" });
     }
     catch (err) {
         next(err);
@@ -93,8 +96,8 @@ exports.createBook = createBook;
 const deleteBook = async (req, res) => {
     try {
         const { id } = req.params;
-        const deleteUserResult = await BookService.deleteBook(id);
-        return res.json({ data: deleteUserResult }).status(200);
+        const deleteBookResult = await BookService.deleteBook(id);
+        return res.json({ data: deleteBookResult }).status(200);
     }
     catch (err) {
         throw err;
