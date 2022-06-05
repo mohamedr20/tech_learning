@@ -3,6 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { Book } from "../utils/interfaces";
 import HttpException from "../exceptions/HttpException";
 
+// router.get("/", BookController.search);
+// router.post("/", BookController.createBook);
+// router.get("/:id", BookController.getBook);
+// router.put("/:id", BookController.updateBook);
+// router.delete("/:id", BookController.deleteBook);
+
 const search = async (
   req: Request,
   res: Response,

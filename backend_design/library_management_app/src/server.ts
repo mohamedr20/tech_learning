@@ -1,16 +1,14 @@
-import app from "./app";
-import { Request, Response } from "express";
+import App from "./app";
+import UserController from "./controllers/user.controller";
+import AuthController from "./controllers/auth.controller";
+import HealthController from "./controllers/health.controller";
 
 const port = process.env.PORT || 8000;
 
-app.get("/health", (_req: Request, res: Response) => {
-  res.json({ status: "Healthy" });
-});
+const app = new App([
+  new HealthController(),
+  new UserController(),
+  new AuthController()
+]);
 
-app.get("/test", (_req: Request, res: Response) => {
-  res.json({ status: "Test" });
-});
-
-app.listen(port, () => {
-  console.log(`Server started at port ${process.env.PORT}`);
-});
+app.listen(Number(port));

@@ -1,22 +1,32 @@
 import UserService from "../services/user.service";
-import AuthService from "../services/auth.service";
+import AuthService, { LoginValidationStatus } from "../services/auth.service";
 
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import HttpException from "../exceptions/HttpException";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 type ControllerResponse = Response | HttpException;
 
 class AuthController {
-  constructor(
-    private userService: UserService,
-    private authService: AuthService
-  ) {}
+  public path = "/auth";
+  public router = Router();
+  private authService = new AuthService();
+  private userService = new UserService();
 
-  async register(req: Request, res: Response): Promise<ControllerResponse> {
+  constructor() {
+    this.initializeRoutes();
+  }
+
+  private initializeRoutes(): void {
+    this.router.post(`${this.path}\register`, this.register);
+    this.router.post(`${this.path}\login`, this.login);
+  }
+
+  private async register(
+    req: Request,
+    res: Response
+  ): Promise<ControllerResponse> {
     try {
-      const isRegistrationValid = await this.authService.checkRegistration(
+      const isRegistrationValid = await this.authService.validateRegistration(
         req.body
       );
 
@@ -27,23 +37,21 @@ class AuthController {
       const oldUser = await this.userService.findUserByEmail(req.body.email);
 
       if (oldUser) {
-        return res.json({
-          statusCode: 409,
-          message: "User already exsists for this email address"
-        });
+        return res
+          .status(409)
+          .send("User already exsists for this email address");
       }
 
-      let encryptedPassword = await bcrypt.hash(password, 10);
-      delete req.body.password;
+      const { hash, requestBody } = await this.authService.validatePassword(
+        req.body
+      );
 
       const userId = await this.userService.insertUser({
-        password_hash: encryptedPassword,
-        ...req.body
+        password_hash: hash,
+        ...requestBody
       });
 
-      const token = jwt.sign({ userId, ...req.body }, "jwt-secret", {
-        expiresIn: "6h"
-      });
+      const token = await this.authService.createToken(userId, req.body);
 
       return res.json({ token });
     } catch (err) {
@@ -51,37 +59,27 @@ class AuthController {
     }
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  private async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const userInput = req.body;
-      if (!userInput.email)
-        next(new HttpException(403, "Email required for login"));
-      if (!userInput.password)
-        next(new HttpException(403, "Password required for login"));
+      let token;
+      const { status, userId } = await this.authService.validateLogin(req.body);
 
-      const user = await this.userService.findUserByEmail(userInput.email);
+      switch (status) {
+        case LoginValidationStatus.NO_EMAIL:
+          throw new HttpException(403, LoginValidationStatus.NO_EMAIL);
+        case LoginValidationStatus.NO_PASSWORD:
+          throw new HttpException(403, LoginValidationStatus.NO_PASSWORD);
+        case LoginValidationStatus.INVALID_PASSWORD:
+          throw new HttpException(403, LoginValidationStatus.INVALID_PASSWORD);
+        case LoginValidationStatus.USER_NOT_FOUND:
+          throw new HttpException(403, LoginValidationStatus.USER_NOT_FOUND);
+        case LoginValidationStatus.SUCCESS:
+          if (userId) {
+            token = await this.authService.createToken(userId);
+          }
+      }
 
-      if (!user)
-        throw new HttpException(
-          404,
-          "Unable to find user for this email address"
-        );
-
-      const comparePassword = await bcrypt.compare(
-        userInput.password,
-        user.password_hash
-      );
-
-      if (!comparePassword)
-        res.json({
-          error: new HttpException(403, "Unable to log in with this password")
-        });
-
-      const token = jwt.sign({ user_id: user.id }, "jwt-secret", {
-        expiresIn: "6h"
-      });
-
-      return res.json({ data: user, token });
+      return res.json({ data: userId, token });
     } catch (err) {
       throw err;
     }

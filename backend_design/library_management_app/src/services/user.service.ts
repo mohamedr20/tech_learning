@@ -1,4 +1,6 @@
+import knex from "knex";
 import UserRepository from "../repo/user.repo";
+import dbConfig from "../../knexfile";
 import { User } from "../utils/interfaces";
 
 interface updateUserDTO {
@@ -10,7 +12,11 @@ interface updateUserDTO {
 }
 
 class UserService {
-  constructor(private userRepository: UserRepository) {}
+  private userRepository = new UserRepository(
+    knex(dbConfig["development"]),
+    "users"
+  );
+  constructor() {}
 
   async findUsers(): Promise<User[]> {
     try {

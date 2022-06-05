@@ -1,3 +1,5 @@
+import { Router } from "express";
+
 enum UserStatus {
   Active = "Active",
   Banned = "Banned",
@@ -63,4 +65,18 @@ interface Author {
   is_best_seller: boolean;
 }
 
-export { UserStatus, User, Library, LibraryCard, Address, Book, Author };
+interface Controller {
+  path: string;
+  router: Router;
+}
+
+export {
+  UserStatus,
+  User,
+  Library,
+  LibraryCard,
+  Address,
+  Book,
+  Author,
+  Controller
+};

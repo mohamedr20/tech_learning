@@ -1,23 +1,46 @@
-import express, { Request, Response } from "express";
+import express, { Router, Application } from "express";
 import dotenv from "dotenv";
-import userRoutes from "./routes/user.routes";
-import authRoutes from "./routes/auth.routes";
-import bookRoutes from "./routes/book.routes";
 import myLogger from "./middleware/logger";
 import errorMiddleware from "./middleware/error";
+import { Controller } from "../src/utils/interfaces";
 
 dotenv.config();
-const app = express();
-//const enviroment = process.env.NODE_ENV || "development";
+class App {
+  public app: express.Application;
 
-app.use(express.json());
-app.use(express.urlencoded());
+  constructor(controllers: Controller[]) {
+    this.app = express();
 
-app.use(myLogger);
-app.use(errorMiddleware);
+    this.initializeMiddleware();
+    this.initializeControllers(controllers);
+    this.initializeErrorHandling();
+  }
 
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/books", bookRoutes);
+  public listen(port: number | string) {
+    this.app.listen(port, () => {
+      console.log(`Server started at port ${process.env.PORT}`);
+    });
+  }
 
-export default app;
+  public getServer(): Application {
+    return this.app;
+  }
+
+  private initializeMiddleware() {
+    this.app.use(express.json());
+    this.app.use(express.urlencoded());
+    this.app.use(myLogger);
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
+  }
+
+  private initializeControllers(controllers: Controller[]) {
+    controllers.forEach((controller) => {
+      this.app.use("/", controller.router);
+    });
+  }
+}
+
+export default App;
