@@ -1,5 +1,4 @@
-import knex, { Knex } from "knex";
-import dbConfig from "../../knexfile";
+import { Knex } from "knex";
 
 interface Reader<T> {
   find(fields: Array<keyof T>): Promise<T[]>;

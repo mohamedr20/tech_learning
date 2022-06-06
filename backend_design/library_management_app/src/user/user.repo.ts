@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 import { User } from "../utils/interfaces";
-import KnexRepository from "./repo";
+import KnexRepository from "../repo";
 
 class UserRepository extends KnexRepository<User> {
   constructor(public readonly knex: Knex, public readonly tableName: string) {

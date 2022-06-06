@@ -1,7 +1,8 @@
 import express, { Router, Application } from "express";
 import dotenv from "dotenv";
-import myLogger from "./middleware/logger";
-import errorMiddleware from "./middleware/error";
+import myLogger from "./middleware/logger.middleware";
+import errorMiddleware from "./middleware/error.middleware";
+import validateMiddleware from "./middleware/validation.middleware";
 import { Controller } from "../src/utils/interfaces";
 
 dotenv.config();

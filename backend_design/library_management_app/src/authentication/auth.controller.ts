@@ -1,8 +1,11 @@
-import UserService from "../services/user.service";
-import AuthService, { LoginValidationStatus } from "../services/auth.service";
+import UserService from "../user/user.service";
+import AuthService, { LoginValidationStatus } from "./auth.service";
 
 import { NextFunction, Request, Response, Router } from "express";
 import HttpException from "../exceptions/HttpException";
+import validateMiddleware from "../middleware/validation.middleware";
+import CreateUserDto from "../user/user.dto";
+import LogInDtO from "./login.dto";
 
 type ControllerResponse = Response | HttpException;
 
@@ -17,8 +20,16 @@ class AuthController {
   }
 
   private initializeRoutes(): void {
-    this.router.post(`${this.path}\register`, this.register);
-    this.router.post(`${this.path}\login`, this.login);
+    this.router.post(
+      `${this.path}/register`,
+      validateMiddleware(CreateUserDto),
+      this.register
+    );
+    this.router.post(
+      `${this.path}/login`,
+      validateMiddleware(LogInDtO),
+      this.login
+    );
   }
 
   private async register(

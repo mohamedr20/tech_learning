@@ -1,5 +1,5 @@
 import knex from "knex";
-import UserRepository from "../repo/user.repo";
+import UserRepository from "./user.repo";
 import dbConfig from "../../knexfile";
 import { User } from "../utils/interfaces";
 

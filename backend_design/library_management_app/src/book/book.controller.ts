@@ -1,7 +1,6 @@
-import * as BookService from "../services/book.service";
+import * as BookService from "./book.service";
 import { NextFunction, Request, Response } from "express";
 import { Book } from "../utils/interfaces";
-import HttpException from "../exceptions/HttpException";
 
 // router.get("/", BookController.search);
 // router.post("/", BookController.createBook);
