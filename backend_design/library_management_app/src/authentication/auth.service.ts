@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import UserService from "./user.service";
+import CreateUserDto from "../user/user.dto";
+import UserService from "../user/user.service";
 
 interface RegisterBody {
   first_name: string;
@@ -26,9 +27,9 @@ class AuthService {
   private userService = new UserService();
   constructor() {}
 
-  async validateRegistration(registerBody: RegisterBody): Promise<boolean> {
+  async validateRegistration(userData: CreateUserDto): Promise<boolean> {
     try {
-      const { first_name, last_name, email, password } = registerBody;
+      const { first_name, last_name, email, password } = userData;
       if (!(email && password && first_name && last_name)) {
         return false;
       }
