@@ -1,19 +1,20 @@
 import UserService from "../user/user.service";
-import AuthService, { LoginValidationStatus } from "./auth.service";
-
+import AuthService from "./auth.service";
 import { NextFunction, Request, Response, Router } from "express";
 import HttpException from "../exceptions/HttpException";
 import validateMiddleware from "../middleware/validation.middleware";
 import CreateUserDto from "../user/user.dto";
 import LogInDtO from "./login.dto";
+import { Controller } from "../utils/interfaces";
+import { UserExsistsForThisEmailException } from "../exceptions/index";
 
 type ControllerResponse = Response | HttpException;
 
-class AuthController {
+class AuthController implements Controller {
   public path = "/auth";
   public router = Router();
-  private authService = new AuthService();
-  private userService = new UserService();
+  public authService = new AuthService();
+  public userService = new UserService();
 
   constructor() {
     this.initializeRoutes();
@@ -32,25 +33,15 @@ class AuthController {
     );
   }
 
-  private async register(
+  private register = async (
     req: Request,
-    res: Response
-  ): Promise<ControllerResponse> {
+    res: Response,
+    next: NextFunction
+  ): Promise<ControllerResponse | undefined> => {
     try {
-      const isRegistrationValid = await this.authService.validateRegistration(
-        req.body
-      );
-
-      if (!isRegistrationValid) {
-        return res.status(400).send("All input is required");
-      }
-
       const oldUser = await this.userService.findUserByEmail(req.body.email);
-
       if (oldUser) {
-        return res
-          .status(409)
-          .send("User already exsists for this email address");
+        throw new UserExsistsForThisEmailException(req.body.email);
       }
 
       const { hash, requestBody } = await this.authService.validatePassword(
@@ -66,35 +57,24 @@ class AuthController {
 
       return res.json({ token });
     } catch (err) {
-      throw err;
+      next(err);
     }
-  }
+  };
 
-  private async login(req: Request, res: Response, next: NextFunction) {
+  private login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let token;
-      const { status, userId } = await this.authService.validateLogin(req.body);
+      const userId = await this.authService.validateLogin(req.body);
 
-      switch (status) {
-        case LoginValidationStatus.NO_EMAIL:
-          throw new HttpException(403, LoginValidationStatus.NO_EMAIL);
-        case LoginValidationStatus.NO_PASSWORD:
-          throw new HttpException(403, LoginValidationStatus.NO_PASSWORD);
-        case LoginValidationStatus.INVALID_PASSWORD:
-          throw new HttpException(403, LoginValidationStatus.INVALID_PASSWORD);
-        case LoginValidationStatus.USER_NOT_FOUND:
-          throw new HttpException(403, LoginValidationStatus.USER_NOT_FOUND);
-        case LoginValidationStatus.SUCCESS:
-          if (userId) {
-            token = await this.authService.createToken(userId);
-          }
+      if (userId) {
+        token = await this.authService.createToken(userId);
       }
 
       return res.json({ data: userId, token });
     } catch (err) {
-      throw err;
+      next(err);
     }
-  }
+  };
 }
 
 export default AuthController;

@@ -3,13 +3,13 @@ import UserRepository from "./user.repo";
 import dbConfig from "../../knexfile";
 import { User } from "../utils/interfaces";
 
-interface updateUserDTO {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-  date_of_birth?: Date;
-}
+// interface updateUserDTO {
+//   firstName?: string;
+//   lastName?: string;
+//   email?: string;
+//   phone?: string;
+//   date_of_birth?: Date;
+// }
 
 class UserService {
   private userRepository = new UserRepository(
@@ -20,6 +20,7 @@ class UserService {
 
   async findUsers(): Promise<User[]> {
     try {
+      console.log(`Inside userService.findUsers...`);
       const users = await this.userRepository.find([
         "id",
         "email",
@@ -35,6 +36,11 @@ class UserService {
 
   async updateUser(id: string, updateBody: Partial<User>): Promise<number> {
     try {
+      console.log(
+        `Inside userService.updateUser... id: ${id} updateBody: ${JSON.stringify(
+          updateBody
+        )}`
+      );
       const updateResult = await this.userRepository.update(id, updateBody);
       return updateResult;
     } catch (err) {
@@ -44,6 +50,7 @@ class UserService {
 
   async findUserById(id: string): Promise<User> {
     try {
+      console.log(`Inside userService.findById... ${id}`);
       const user = await this.userRepository.findOne(id);
       return user;
     } catch (err) {
@@ -53,6 +60,7 @@ class UserService {
 
   async findUserByEmail(email: string): Promise<User> {
     try {
+      console.log(`Inside userService.findByEmail... email:${email}`);
       const user = await this.userRepository.findUserByEmail(email);
       return user;
     } catch (err) {
@@ -62,6 +70,11 @@ class UserService {
 
   async insertUser(userInput: Partial<User>): Promise<number> {
     try {
+      console.log(
+        `Inside userService.insertUser... userInput:${JSON.stringify(
+          userInput
+        )}`
+      );
       const createUserResult = await this.userRepository.insert({
         ...userInput
       });
@@ -73,6 +86,7 @@ class UserService {
 
   async deleteUser(id: string): Promise<number> {
     try {
+      console.log(`Inside userService.deleteUser... userId:${id}`);
       const deleteUserResult = await this.userRepository.delete(id);
       return deleteUserResult;
     } catch (err) {

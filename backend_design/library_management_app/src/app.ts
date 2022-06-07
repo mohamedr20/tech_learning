@@ -1,11 +1,7 @@
-import express, { Router, Application } from "express";
-import dotenv from "dotenv";
-import myLogger from "./middleware/logger.middleware";
-import errorMiddleware from "./middleware/error.middleware";
-import validateMiddleware from "./middleware/validation.middleware";
+import express, { Router, Application, NextFunction } from "express";
+import { errorMiddleware } from "./middleware/index";
 import { Controller } from "../src/utils/interfaces";
 
-dotenv.config();
 class App {
   public app: express.Application;
 
@@ -29,8 +25,7 @@ class App {
 
   private initializeMiddleware() {
     this.app.use(express.json());
-    this.app.use(express.urlencoded());
-    this.app.use(myLogger);
+    this.app.use(express.urlencoded({ extended: false }));
   }
 
   private initializeErrorHandling() {

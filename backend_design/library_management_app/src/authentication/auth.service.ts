@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { isNamedExportBindings } from "typescript";
+import HttpException from "../exceptions/HttpException";
+import UserExsistsForThisEmailException from "../exceptions/UserExsistsForThisEmailException";
+import InvalidCredentialsException from "../exceptions/InvalidCredentialsException";
 import CreateUserDto from "../user/user.dto";
+
 import UserService from "../user/user.service";
 
 interface RegisterBody {
@@ -24,79 +29,46 @@ export enum LoginValidationStatus {
 }
 
 class AuthService {
-  private userService = new UserService();
+  public userService = new UserService();
+
   constructor() {}
 
-  async validateRegistration(userData: CreateUserDto): Promise<boolean> {
-    try {
-      const { first_name, last_name, email, password } = userData;
-      if (!(email && password && first_name && last_name)) {
-        return false;
-      }
-      return true;
-    } catch (err) {
-      throw err;
-    }
+  public async validateLogin(userInput: LoginBody): Promise<number> {
+    const user = await this.userService.findUserByEmail(userInput.email);
+
+    //TODO: Convert to http exception for User not found for this email
+    if (!user) throw new UserExsistsForThisEmailException(userInput.email);
+
+    const comparePassword = await bcrypt.compare(
+      userInput.password,
+      user.password_hash
+    );
+
+    if (!comparePassword) throw new InvalidCredentialsException();
+    return user.id;
   }
 
-  async validateLogin(
-    userInput: LoginBody
-  ): Promise<{ status: LoginValidationStatus; userId?: number }> {
-    try {
-      const { email, password } = userInput;
-
-      if (!email) return { status: LoginValidationStatus.NO_EMAIL };
-      if (!password) return { status: LoginValidationStatus.NO_PASSWORD };
-
-      const user = await this.userService.findUserByEmail(userInput.email);
-      if (!user) return { status: LoginValidationStatus.USER_NOT_FOUND };
-
-      const comparePassword = await bcrypt.compare(
-        userInput.password,
-        user.password_hash
-      );
-
-      if (!comparePassword)
-        return { status: LoginValidationStatus.INVALID_PASSWORD };
-
-      return {
-        status: LoginValidationStatus.SUCCESS,
-        userId: user.id
-      };
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async validatePassword(requestBody: RegisterBody): Promise<{
+  public async validatePassword(requestBody: RegisterBody): Promise<{
     hash: string;
     requestBody: RegisterBody;
   }> {
-    try {
-      const hash = await bcrypt.hash(requestBody.password as string, 10);
-      delete requestBody.password;
-
-      return {
-        hash,
-        requestBody
-      };
-    } catch (err) {
-      throw err;
-    }
+    const hash = await bcrypt.hash(requestBody.password as string, 10);
+    if (!hash) throw new InvalidCredentialsException();
+    delete requestBody.password;
+    return {
+      hash,
+      requestBody
+    };
   }
 
-  async createToken(
+  public async createToken(
     userId: number,
     requestBody?: RegisterBody
   ): Promise<string> {
-    try {
-      const token = await jwt.sign({ userId, ...requestBody }, "jwt-secret", {
-        expiresIn: "6h"
-      });
-      return token;
-    } catch (err) {
-      throw err;
-    }
+    const token = await jwt.sign({ userId, ...requestBody }, "jwt-secret", {
+      expiresIn: "6h"
+    });
+    return token;
   }
 }
 

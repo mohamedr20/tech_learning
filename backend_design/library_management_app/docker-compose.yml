@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_DB: lib_management_db
       POSTGRES_HOST_AUTH_METHOD: trust
-  backend:
+  api:
     build: .
     depends_on:
       - postgres

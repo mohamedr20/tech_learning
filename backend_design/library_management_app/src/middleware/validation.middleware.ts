@@ -11,12 +11,10 @@ function validationMiddleware<T>(
     validate(plainToClass(type, req.body), { skipMissingProperties }).then(
       (errors: ValidationError[]) => {
         if (errors.length > 0) {
-          const message = errors
-            .map((error: ValidationError) =>
-              Object.values(error.constraints as { [s: string]: string })
-            )
-            .join(", ");
-          next(new HttpException(400, message));
+          const message = errors.map((error: ValidationError) => {
+            return { [error.property]: error.constraints };
+          });
+          next(new HttpException(400, JSON.stringify(message)));
         } else {
           next();
         }

@@ -4,7 +4,7 @@ import { Response, Request, NextFunction } from "express";
 
 const errorMiddleware = (
   error: HttpException,
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {

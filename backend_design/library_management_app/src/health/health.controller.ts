@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import logger from "../utils/logger";
 
 class HealthController {
   public path = "/health";
@@ -13,11 +14,8 @@ class HealthController {
   }
 
   async checkHealth(_req: Request, res: Response): Promise<Response> {
-    try {
-      return res.json({ status: "Healthy" });
-    } catch (err) {
-      throw err;
-    }
+    logger.info(`Inside health.controller, checking for health...`);
+    return res.json({ status: "Healthy" });
   }
 }
 

@@ -8,27 +8,34 @@ import {
   IsNumber,
   Max,
   Min,
-  IsOptional
+  IsOptional,
+  IsNotEmpty
 } from "class-validator";
 
 class CreateUserDto {
+  @IsNotEmpty()
   @IsEmail()
   public email!: string;
 
+  @IsNotEmpty()
   @IsString()
   @MinLength(6, { message: "Password is too short" })
   @MaxLength(15, { message: "Password is too long" })
   public password!: string;
 
+  @IsNotEmpty()
   @IsString()
   public first_name!: string;
 
+  @IsNotEmpty()
   @IsString()
   public last_name!: string;
 
+  @IsNotEmpty()
   @IsString()
   public username!: string;
 
+  @IsNotEmpty()
   @IsDateString()
   public date_of_birth!: Date;
 
