@@ -39,22 +39,7 @@ class AuthController implements Controller {
     next: NextFunction
   ): Promise<ControllerResponse | undefined> => {
     try {
-      const oldUser = await this.userService.findUserByEmail(req.body.email);
-      if (oldUser) {
-        throw new UserExsistsForThisEmailException(req.body.email);
-      }
-
-      const { hash, requestBody } = await this.authService.validatePassword(
-        req.body
-      );
-
-      const userId = await this.userService.insertUser({
-        password_hash: hash,
-        ...requestBody
-      });
-
-      const token = await this.authService.createToken(userId, req.body);
-
+      const token = await this.authService.register(req.body);
       return res.json({ token });
     } catch (err) {
       next(err);
@@ -63,14 +48,8 @@ class AuthController implements Controller {
 
   private login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let token;
-      const userId = await this.authService.validateLogin(req.body);
-
-      if (userId) {
-        token = await this.authService.createToken(userId);
-      }
-
-      return res.json({ data: userId, token });
+      const token = await this.authService.login(req.body);
+      return res.json({ token });
     } catch (err) {
       next(err);
     }

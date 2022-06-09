@@ -1,12 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { isNamedExportBindings } from "typescript";
+import { isNamedExportBindings, tokenToString } from "typescript";
 import HttpException from "../exceptions/HttpException";
 import UserExsistsForThisEmailException from "../exceptions/UserExsistsForThisEmailException";
 import InvalidCredentialsException from "../exceptions/InvalidCredentialsException";
 import CreateUserDto from "../user/user.dto";
 
 import UserService from "../user/user.service";
+import LogInDtO from "./login.dto";
 
 interface RegisterBody {
   first_name: string;
@@ -33,10 +34,30 @@ class AuthService {
 
   constructor() {}
 
-  public async validateLogin(userInput: LoginBody): Promise<number> {
+  public async register(userInput: CreateUserDto): Promise<string> {
+    const oldUser = await this.userService.findUserByEmail(userInput.email);
+    if (oldUser) {
+      throw new UserExsistsForThisEmailException(userInput.email);
+    }
+
+    const hash = await bcrypt.hash(userInput.password as string, 10);
+    if (!hash) throw new InvalidCredentialsException();
+
+    delete userInput.password;
+
+    const userId = await this.userService.insertUser({
+      password_hash: hash,
+      ...userInput
+    });
+
+    const token = await this.createToken(userId, userInput);
+
+    return token;
+  }
+
+  public async login(userInput: LogInDtO): Promise<string> {
     const user = await this.userService.findUserByEmail(userInput.email);
 
-    //TODO: Convert to http exception for User not found for this email
     if (!user) throw new UserExsistsForThisEmailException(userInput.email);
 
     const comparePassword = await bcrypt.compare(
@@ -45,20 +66,10 @@ class AuthService {
     );
 
     if (!comparePassword) throw new InvalidCredentialsException();
-    return user.id;
-  }
 
-  public async validatePassword(requestBody: RegisterBody): Promise<{
-    hash: string;
-    requestBody: RegisterBody;
-  }> {
-    const hash = await bcrypt.hash(requestBody.password as string, 10);
-    if (!hash) throw new InvalidCredentialsException();
-    delete requestBody.password;
-    return {
-      hash,
-      requestBody
-    };
+    const token = this.createToken(user.id);
+
+    return token;
   }
 
   public async createToken(

@@ -17,11 +17,10 @@ class CreateUserDto {
   @IsEmail()
   public email!: string;
 
-  @IsNotEmpty()
   @IsString()
   @MinLength(6, { message: "Password is too short" })
   @MaxLength(15, { message: "Password is too long" })
-  public password!: string;
+  public password?: string;
 
   @IsNotEmpty()
   @IsString()
