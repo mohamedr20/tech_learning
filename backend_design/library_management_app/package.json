@@ -6,11 +6,11 @@
   "scripts": {
     "start:docker": "npm run build && nodemon --legacy-watch",
     "build": "rimraf ./dist && tsc --incremental",
-    "docker:build": "docker-compose --env-file ./.env up --build",
+    "docker:build": "NODE_ENV=dev docker-compose --env-file ./.env up --build",
     "docker:migrate": "docker-compose exec api npx knex migrate:latest --knexfile=knexfile.ts --verbose",
     "docker:seed": "docker-compose exec api npx knex seed:run --knexfile=knexfile.ts --verbose",
+    "docker:build:db": "npm run docker:migrate && npm run docker:seed",
     "docker:test": "docker-compose exec api npx jest",
-    "docker:run": "docker-compose up",
     "docker:shutdown": "docker-compose down --remove-orphans",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",

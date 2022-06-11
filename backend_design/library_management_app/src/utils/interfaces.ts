@@ -70,6 +70,16 @@ interface Controller {
   router: Router;
 }
 
+interface BookCategory {
+  book_id: number;
+  category_id: number;
+}
+
+interface Category {
+  id: number;
+  category_name: string;
+}
+
 export {
   UserStatus,
   User,
@@ -78,5 +88,7 @@ export {
   Address,
   Book,
   Author,
+  BookCategory,
+  Category,
   Controller
 };

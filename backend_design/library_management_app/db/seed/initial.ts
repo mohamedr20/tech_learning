@@ -1,24 +1,13 @@
 import { Knex } from "knex";
-// import {
-//   Address,
-//   Author,
-//   Book,
-//   Library,
-//   LibraryCard,
-//   User
-// } from "../../src/utils/interfaces";
 import {
   users,
   authors,
   books,
   libraryCards,
   libraries,
-  addresses
-  // getAddress,
-  // getLibrary,
-  // getLibraryCard,
-  // getUser,
-  // getBook
+  addresses,
+  bookCategory,
+  category
 } from "../../src/utils/db";
 
 export async function seed(knex: Knex): Promise<void> {
@@ -30,6 +19,8 @@ export async function seed(knex: Knex): Promise<void> {
   await knex("address").del();
   await knex("books").del();
   await knex("author").del();
+  await knex("book_category").del();
+  await knex("category").del();
 
   const tableNames = [
     "address",
@@ -37,10 +28,21 @@ export async function seed(knex: Knex): Promise<void> {
     "library_card",
     "users",
     "books",
+    "category",
+    "book_category",
     "author"
   ];
 
-  const entries = [addresses, libraries, libraryCards, users, books, authors];
+  const entries = [
+    addresses,
+    libraries,
+    libraryCards,
+    users,
+    books,
+    category,
+    bookCategory,
+    authors
+  ];
 
   const seedEntries = async (entries: any[]) => {
     for (const [index, entry] of entries.entries()) {

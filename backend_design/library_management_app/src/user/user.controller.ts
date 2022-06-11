@@ -17,11 +17,11 @@ class UserController {
     this.router.delete(`${this.path}/:id`, this.deleteUser);
   }
 
-  async findAllUsers(
+  private findAllUsers = async (
     _req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> {
+  ): Promise<Response> => {
     try {
       const users = await this.userService.findUsers();
       return res.json({ data: users });
@@ -29,9 +29,9 @@ class UserController {
       next(err);
       throw err;
     }
-  }
+  };
 
-  async findUser(req: Request, res: Response): Promise<Response> {
+  private findUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { id } = req.params;
       const user = await this.userService.findUserById(id);
@@ -39,13 +39,13 @@ class UserController {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
-  async updateUser(
+  private updateUser = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response> {
+  ): Promise<Response> => {
     try {
       const { id } = req.params;
       const updateUserResult: number = await this.userService.updateUser(
@@ -61,9 +61,12 @@ class UserController {
       next(err);
       throw err;
     }
-  }
+  };
 
-  async deleteUser(req: Request, res: Response): Promise<Response> {
+  private deleteUser = async (
+    req: Request,
+    res: Response
+  ): Promise<Response> => {
     try {
       const { id } = req.params;
       const deleteUserResult: number = await this.userService.deleteUser(id);
@@ -71,7 +74,7 @@ class UserController {
     } catch (err) {
       throw err;
     }
-  }
+  };
 }
 
 export default UserController;

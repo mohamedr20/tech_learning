@@ -7,7 +7,9 @@ import {
   LibraryCard,
   User,
   Book,
-  Author
+  Author,
+  BookCategory,
+  Category
 } from "./interfaces";
 
 const createDefaultColumns = (knex: Knex, table: Knex.TableBuilder) => {
@@ -201,6 +203,32 @@ const authors: Author[] = [
   }
 ];
 
+const bookCategory: BookCategory[] = [
+  {
+    book_id: 1,
+    category_id: 1
+  },
+  {
+    book_id: 1,
+    category_id: 2
+  },
+  {
+    book_id: 2,
+    category_id: 1
+  }
+];
+
+const category: Category[] = [
+  {
+    id: 1,
+    category_name: "Technology"
+  },
+  {
+    id: 2,
+    category_name: "Web Development"
+  }
+];
+
 export {
   createDefaultColumns,
   users,
@@ -208,5 +236,7 @@ export {
   books,
   libraryCards,
   libraries,
-  addresses
+  addresses,
+  bookCategory,
+  category
 };

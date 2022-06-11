@@ -10,6 +10,10 @@ describe("AuthController", () => {
   const authController = new AuthController();
   const app = new App([authController]);
 
+  beforeAll(() => {
+    faker.setLocale("en_US");
+  });
+
   describe("POST /auth/register", () => {
     it("should return a user token upon successfull registration", () => {
       const userData: CreateUserDto = {
@@ -20,7 +24,7 @@ describe("AuthController", () => {
         username: faker.internet.userName(),
         date_of_birth: faker.date.birthdate(),
         age: 28,
-        phone: faker.phone.phoneNumber("703-###-####")
+        phone: "703-359-3717"
       };
 
       process.env.JWT_SECRET = "jwt_secret";
@@ -36,6 +40,7 @@ describe("AuthController", () => {
         .send(userData)
         .expect("Content-Type", /json/)
         .then((res: any) => {
+          console.log(res);
           expect(res.status).toBe(200);
           expect(res.body).toHaveProperty("token");
         });
@@ -64,5 +69,9 @@ describe("AuthController", () => {
           expect(res.body).toHaveProperty("token");
         });
     });
+  });
+
+  afterAll((done) => {
+    done();
   });
 });
