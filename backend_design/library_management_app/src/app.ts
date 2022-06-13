@@ -1,7 +1,9 @@
-import express, { Router, Application, NextFunction } from "express";
-import { errorMiddleware } from "./middleware/index";
+import express, { Application } from "express";
+import { errorHandler } from "./middleware/index";
 import { Controller } from "../src/utils/interfaces";
-
+import dbConfig from "../knexfile";
+import knex from "knex";
+import { Model } from "objection";
 class App {
   public app: express.Application;
 
@@ -9,6 +11,7 @@ class App {
     this.app = express();
 
     this.initializeMiddleware();
+    this.initializeDatabase();
     this.initializeControllers(controllers);
     this.initializeErrorHandling();
   }
@@ -29,7 +32,12 @@ class App {
   }
 
   private initializeErrorHandling() {
-    this.app.use(errorMiddleware);
+    this.app.use(errorHandler);
+  }
+
+  private initializeDatabase() {
+    const knexInstance = knex(dbConfig["development"]);
+    Model.knex(knexInstance);
   }
 
   private initializeControllers(controllers: Controller[]) {

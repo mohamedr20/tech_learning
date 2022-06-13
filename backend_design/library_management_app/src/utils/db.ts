@@ -200,6 +200,14 @@ const authors: Author[] = [
     description: `Author and founding member of Test Publication Co. 
     has been doing this for about 20-25 years`,
     is_best_seller: false
+  },
+  {
+    id: 5,
+    book_id: 4,
+    name: "Random Author",
+    description:
+      "Has been doing this type of work for a while now, veteran of the game.",
+    is_best_seller: false
   }
 ];
 
@@ -215,6 +223,14 @@ const bookCategory: BookCategory[] = [
   {
     book_id: 2,
     category_id: 1
+  },
+  {
+    book_id: 3,
+    category_id: 2
+  },
+  {
+    book_id: 4,
+    category_id: 3
   }
 ];
 
@@ -226,6 +242,10 @@ const category: Category[] = [
   {
     id: 2,
     category_name: "Web Development"
+  },
+  {
+    id: 3,
+    category_name: "Test Category"
   }
 ];
 

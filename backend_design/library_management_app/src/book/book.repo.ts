@@ -13,30 +13,68 @@ class BookRepository extends KnexRepository<Book> {
     const { title, author, publication_date, category } = searchQuery;
 
     if (title) {
-      return this.queryBuilder
-        .whereLike("title", `%${title}%`)
-        .andWhereLike("author", `%${author}%`);
-    } else if (author) {
-      //get all books that are related to an author
-
+      if (title && author) {
+        if (title && author && category) {
+          return this.queryBuilder
+            .leftJoin("author", "books.id", "author.book_id")
+            .leftJoin("book_category", "books.id", "book_category.book_id")
+            .leftJoin("category", "book_category.category_id", "category.id")
+            .whereLike("name", `%${author}%`)
+            .andWhereLike("category_name", `%${category}`)
+            .andWhereLike("title", `%${title}%`);
+        }
+        return this.queryBuilder
+          .leftJoin("author", "books.id", "author.book_id")
+          .whereLike("title", `%${title}%`);
+      }
+      return this.queryBuilder.whereLike("title", `%${title}%`);
+    }
+    if (category) {
+      if (category && title) {
+        return this.queryBuilder
+          .leftJoin("author", "books.id", "author.book_id")
+          .leftJoin("book_category", "books.id", "book_category.book_id")
+          .leftJoin("category", "book_category.category_id", "category.id")
+          .whereLike("category_name", `%${category}`)
+          .andWhereLike("title", `%${title}%`);
+      }
+      if (category && author && title) {
+        return this.queryBuilder
+          .leftJoin("author", "books.id", "author.book_id")
+          .leftJoin("book_category", "books.id", "book_category.book_id")
+          .leftJoin("category", "book_category.category_id", "category.id")
+          .whereLike("name", `%${author}%`)
+          .andWhereLike("category_name", `%${category}`)
+          .andWhereLike("title", `%${title}%`);
+      }
       return this.queryBuilder
         .leftJoin("author", "books.id", "author.book_id")
         .leftJoin("book_category", "books.id", "book_category.book_id")
         .leftJoin("category", "book_category.category_id", "category.id")
-        .whereLike("name", `%${author}%`)
-        .andWhereLike("category_name", `%${category}`);
-
-      //
-
-      // .where("name", "=", `%${author}%`);
-      // return this.queryBuilder
-      //
-      //   .andWhereLike("author", `%${author}%`);
-    } else if (title && author && publication_date) {
-      // get all books related to an author and filter by the publication date
-    } else if (title && author && publication_date && category) {
+        .whereLike("category_name", `%${category}`);
     }
-    return this.queryBuilder.whereLike("title", `%${title}%`);
+
+    if (author) {
+      if (author && title) {
+        return this.queryBuilder
+          .leftJoin("author", "books.id", "author.book_id")
+          .whereLike("title", `%${title}%`);
+      }
+      if (author && title && category) {
+        return this.queryBuilder
+          .leftJoin("author", "books.id", "author.book_id")
+          .leftJoin("book_category", "books.id", "book_category.book_id")
+          .leftJoin("category", "book_category.category_id", "category.id")
+          .whereLike("name", `%${author}%`)
+          .andWhereLike("category_name", `%${category}`)
+          .andWhereLike("title", `%${title}%`);
+      }
+      return this.queryBuilder
+        .leftJoin("author", "books.id", "author.book_id")
+        .whereLike("name", `%${author}%`);
+    }
+
+    return this.queryBuilder.select("*");
   }
   // findUserByEmail(email: string): Promise<User> {
   //   return this.queryBuilder.where("email", "=", email).select().first();

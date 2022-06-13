@@ -1,4 +1,4 @@
-import errorMiddleware from "./error.middleware";
+import errorHandler from "./error.middleware";
 import validationMiddleware from "./validation.middleware";
 
-export { errorMiddleware, validationMiddleware };
+export { errorHandler, validationMiddleware };
