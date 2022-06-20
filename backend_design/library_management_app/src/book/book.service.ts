@@ -2,25 +2,8 @@ import dbConfig from "../../knexfile";
 import knex from "knex";
 import Book from "../book/models/book.model";
 import BookRepository from "./book.repo";
-import { ParsedQs } from "qs";
 import { BookSearchParams } from "./interfaces";
-// interface updateBookDTO {
-//   title: string;
-//   description: string;
-//   publication_date: Date;
-//   is_best_seller: boolean;
-//   is_reference: boolean;
-// }
-
-interface BookQuery {
-  [key: string]:
-    | undefined
-    | string
-    | string[]
-    | ParsedQs
-    | ParsedQs[]
-    | keyof BookSearchParams;
-}
+import CreateBookDto from "./book.dto";
 
 class BookService {
   private env = process.env.NODE_ENV || "development";
@@ -32,8 +15,31 @@ class BookService {
   constructor() {}
 
   public async searchForBooks(searchQuery: BookSearchParams): Promise<Book[]> {
-    const bookResult = await this.bookRepository.findBookByTitle(searchQuery);
+    const bookResult = await this.bookRepository.search(searchQuery);
     return bookResult;
+  }
+
+  public async findBookItems(bookId: string) {
+    const users = await this.bookRepository.findUserForBook(bookId);
+    return users;
+  }
+
+  public async insertBook(bookInput: CreateBookDto): Promise<number> {
+    const bookResult = await this.bookRepository.insert(bookInput);
+    return bookResult;
+  }
+
+  public async updateBook(
+    bookId: string,
+    bookInput: CreateBookDto
+  ): Promise<number> {
+    const updateResult = await this.bookRepository.update(bookId, bookInput);
+    return updateResult;
+  }
+
+  public async deleteBook(bookId: string): Promise<number> {
+    const deleteResult = await this.bookRepository.delete(bookId);
+    return deleteResult;
   }
 }
 
@@ -125,19 +131,6 @@ class BookService {
 //     return user;
 //   } catch (err) {
 //     throw err;
-//   }
-// };
-
-// const deleteBook = async (id: string): Promise<number | void> => {
-//   try {
-//     const deleteResult = await dbInstance<Book>("books")
-//       .where("id", "=", id)
-//       .del();
-//     return deleteResult;
-//   } catch (err) {
-//     if (err instanceof Error) {
-//       throw err;
-//     }
 //   }
 // };
 

@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { User } from "../utils/interfaces";
+import User from "./models/user.model";
 import KnexRepository from "../repo";
 
 class UserRepository extends KnexRepository<User> {
@@ -9,6 +9,15 @@ class UserRepository extends KnexRepository<User> {
 
   findUserByEmail(email: string): Promise<User> {
     return this.queryBuilder.where("email", "=", email).select().first();
+  }
+
+  async findBooksForUser(userId: string) {
+    const user = await User.query().findById(userId);
+    if (user) {
+      const books = user.$relatedQuery("books");
+      return books;
+    }
+    return [];
   }
 }
 

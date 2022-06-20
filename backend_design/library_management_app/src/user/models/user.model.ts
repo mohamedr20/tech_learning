@@ -9,11 +9,13 @@ import { Fine } from "./index";
 class User extends Model {
   id!: number;
   first_name!: string;
-  last_name!: number;
+  last_name!: string;
+  username!: string;
+  age!: number;
   email!: string;
-  password_hash!: number;
+  password_hash!: string;
   phone!: string;
-  date_of_birth!: number;
+  date_of_birth!: Date;
 
   static get tableName(): string {
     return "user";

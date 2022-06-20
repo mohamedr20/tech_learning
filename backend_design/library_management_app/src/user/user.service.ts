@@ -1,7 +1,7 @@
 import knex from "knex";
 import UserRepository from "./user.repo";
 import dbConfig from "../../knexfile";
-import { User } from "../utils/interfaces";
+import User from "./models/user.model";
 
 class UserService {
   private userRepository = new UserRepository(
@@ -26,20 +26,6 @@ class UserService {
     }
   }
 
-  async updateUser(id: string, updateBody: Partial<User>): Promise<number> {
-    try {
-      console.log(
-        `Inside userService.updateUser... id: ${id} updateBody: ${JSON.stringify(
-          updateBody
-        )}`
-      );
-      const updateResult = await this.userRepository.update(id, updateBody);
-      return updateResult;
-    } catch (err) {
-      throw err;
-    }
-  }
-
   async findUserById(id: string): Promise<User> {
     try {
       console.log(`Inside userService.findById... ${id}`);
@@ -55,6 +41,30 @@ class UserService {
       console.log(`Inside userService.findByEmail... email:${email}`);
       const user = await this.userRepository.findUserByEmail(email);
       return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findBooksForUser(userId: string) {
+    try {
+      console.log(`Inside userService.findBooksForUser... userId:${userId}`);
+      const books = await this.userRepository.findBooksForUser(userId);
+      return books;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateUser(id: string, updateBody: Partial<User>): Promise<number> {
+    try {
+      console.log(
+        `Inside userService.updateUser... id: ${id} updateBody: ${JSON.stringify(
+          updateBody
+        )}`
+      );
+      const updateResult = await this.userRepository.update(id, updateBody);
+      return updateResult;
     } catch (err) {
       throw err;
     }

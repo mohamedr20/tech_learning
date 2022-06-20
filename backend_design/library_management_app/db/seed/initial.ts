@@ -7,7 +7,9 @@ import {
   libraries,
   addresses,
   bookCategory,
-  category
+  category,
+  racks,
+  bookItems
 } from "../../src/utils/db";
 
 export async function seed(knex: Knex): Promise<void> {
@@ -30,7 +32,9 @@ export async function seed(knex: Knex): Promise<void> {
     "book",
     "category",
     "book_category",
-    "author"
+    "author",
+    "library_rack",
+    "book_item"
   ];
 
   const entries = [
@@ -41,7 +45,9 @@ export async function seed(knex: Knex): Promise<void> {
     books,
     category,
     bookCategory,
-    authors
+    authors,
+    racks,
+    bookItems
   ];
 
   const seedEntries = async (entries: any[]) => {

@@ -12,7 +12,7 @@
     "docker:build:db": "npm run docker:migrate && npm run docker:seed",
     "docker:test": "docker-compose exec api npx jest",
     "docker:shutdown": "docker-compose down --remove-orphans",
-    "lint": "npx eslint --ignore-path .eslintignore --ext .js,.ts .",
+    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "migrate": "knex migrate:latest --knexfile=knexfile.ts --verbose",
     "migrate:make": "knex migrate:make --knexfile=knexfile.ts",

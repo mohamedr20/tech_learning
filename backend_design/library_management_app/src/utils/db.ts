@@ -249,6 +249,41 @@ const category: Category[] = [
   }
 ];
 
+const racks = [
+  {
+    id: 1,
+    rack_number: 1,
+    floor_number: 1
+  }
+];
+
+const bookItems = [
+  {
+    book_id: 1,
+    user_id: 1,
+    rack_id: 1,
+    due_date: new Date(),
+    is_reserved: false,
+    is_checked_out: false
+  },
+  {
+    book_id: 2,
+    user_id: 1,
+    rack_id: 1,
+    due_date: new Date(),
+    is_reserved: false,
+    is_checked_out: false
+  },
+  {
+    book_id: 3,
+    user_id: 1,
+    rack_id: 1,
+    due_date: new Date(),
+    is_reserved: false,
+    is_checked_out: false
+  }
+];
+
 export {
   createDefaultColumns,
   users,
@@ -258,5 +293,7 @@ export {
   libraries,
   addresses,
   bookCategory,
-  category
+  category,
+  racks,
+  bookItems
 };

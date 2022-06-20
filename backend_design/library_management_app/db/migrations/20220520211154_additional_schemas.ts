@@ -230,19 +230,14 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("user_role");
   await knex.schema.dropTable("role");
   await knex.schema.dropTable("address");
-
   await knex.schema.dropTable("book");
   await knex.schema.dropTable("book_item");
   await knex.schema.dropTable("book_category");
   await knex.schema.dropTable("category");
-
   await knex.schema.dropTable("author");
   await knex.schema.dropTable("book_author");
-
   await knex.schema.dropTable("library");
-  await knex.schema.dropTable("library_card");
   await knex.schema.dropTable("library_business_hours");
   await knex.schema.dropTable("library_rack");
-
   await knex.schema.dropTable("fine");
 }

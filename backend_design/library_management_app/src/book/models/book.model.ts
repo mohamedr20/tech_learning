@@ -3,7 +3,7 @@ import {
   ModelOptions,
   QueryContext,
   RelationMappings,
-  RelationMappingsThunk
+  RelationMappingsThunk,
 } from "objection";
 
 import Category from "../../category/models/category.model";
@@ -61,14 +61,14 @@ class Book extends Model {
         }
       },
 
-      items: {
+      users: {
         relation: Model.ManyToManyRelation,
         modelClass: User,
         join: {
           from: "book.id",
           through: {
-            from: "book_items.book_id",
-            to: "book_items.user_id"
+            from: "book_item.book_id",
+            to: "book_item.user_id"
           },
           to: "user.id"
         }
