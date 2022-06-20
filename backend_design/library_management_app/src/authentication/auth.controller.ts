@@ -6,7 +6,6 @@ import validateMiddleware from "../middleware/validation.middleware";
 import CreateUserDto from "../user/user.dto";
 import LogInDtO from "./login.dto";
 import { Controller } from "../utils/interfaces";
-import { UserExsistsForThisEmailException } from "../exceptions/index";
 
 type ControllerResponse = Response | HttpException;
 

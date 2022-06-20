@@ -1,5 +1,5 @@
-import type { Knex } from 'knex';
-import dotenv from 'dotenv';
+import type { Knex } from "knex";
+import dotenv from "dotenv";
 dotenv.config();
 
 // Update with your config settings.
@@ -10,18 +10,18 @@ dotenv.config();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
-    client: 'pg',
+    client: "pg",
     connection: process.env.DATABASE_URL,
     migrations: {
-      directory: './db/migrations',
-      tableName: 'knex_migrations',
-      extension: 'ts',
+      directory: "./db/migrations",
+      tableName: "knex_migrations",
+      extension: "ts"
     },
     seeds: {
-      directory: './db/seed',
-      extension: 'ts',
-    },
-  },
+      directory: "./db/seed",
+      extension: "ts"
+    }
+  }
 };
 
 export default config;

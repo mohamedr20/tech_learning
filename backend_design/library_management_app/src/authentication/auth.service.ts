@@ -1,33 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { isNamedExportBindings, tokenToString } from "typescript";
-import HttpException from "../exceptions/HttpException";
 import UserExsistsForThisEmailException from "../exceptions/UserExsistsForThisEmailException";
 import InvalidCredentialsException from "../exceptions/InvalidCredentialsException";
 import CreateUserDto from "../user/user.dto";
-
 import UserService from "../user/user.service";
 import LogInDtO from "./login.dto";
-
-interface RegisterBody {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password?: string;
-}
-
-interface LoginBody {
-  email: string;
-  password: string;
-}
-
-export enum LoginValidationStatus {
-  NO_EMAIL = "Email not provided",
-  NO_PASSWORD = "Password not provided",
-  USER_NOT_FOUND = "User not found for this email address",
-  INVALID_PASSWORD = "Unable to login with this password",
-  SUCCESS = "Logged in successfully"
-}
 
 class AuthService {
   public userService = new UserService();
@@ -74,7 +51,7 @@ class AuthService {
 
   public async createToken(
     userId: number,
-    requestBody?: RegisterBody
+    requestBody?: CreateUserDto
   ): Promise<string> {
     const token = await jwt.sign({ userId, ...requestBody }, "jwt-secret", {
       expiresIn: "6h"
