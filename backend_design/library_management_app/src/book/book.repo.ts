@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { Book } from "../utils/interfaces";
+import Book from "./models/book.model";
 import KnexRepository from "../repo";
 import { BookSearchParams } from "./interfaces";
 
@@ -8,77 +8,69 @@ class BookRepository extends KnexRepository<Book> {
     super(knex, "books");
   }
 
-  findBookByTitle(searchQuery: BookSearchParams): Promise<Book[]> {
+  async findBookByTitle(searchQuery: BookSearchParams): Promise<Book[]> {
     console.log(searchQuery);
     const { title, author, publication_date, category } = searchQuery;
 
-    if (title) {
-      if (title && author) {
-        if (title && author && category) {
-          return this.queryBuilder
-            .leftJoin("author", "books.id", "author.book_id")
-            .leftJoin("book_category", "books.id", "book_category.book_id")
-            .leftJoin("category", "book_category.category_id", "category.id")
-            .whereLike("name", `%${author}%`)
-            .andWhereLike("category_name", `%${category}`)
-            .andWhereLike("title", `%${title}%`);
-        }
-        return this.queryBuilder
-          .leftJoin("author", "books.id", "author.book_id")
-          .whereLike("title", `%${title}%`);
-      }
-      return this.queryBuilder.whereLike("title", `%${title}%`);
-    }
+    const books = await Book.query()
+      .leftJoin("author", "book.id", "author.book_id")
+      .leftJoin("book_category", "book.id", "book_category.book_id")
+      .leftJoin("category", "book_category.category_id", "category.id")
+      .select("*");
+
     if (category) {
-      if (category && title) {
-        return this.queryBuilder
-          .leftJoin("author", "books.id", "author.book_id")
-          .leftJoin("book_category", "books.id", "book_category.book_id")
-          .leftJoin("category", "book_category.category_id", "category.id")
-          .whereLike("category_name", `%${category}`)
-          .andWhereLike("title", `%${title}%`);
+      if (category && author) {
+        if (category && author && title) {
+          return books.filter(
+            (book: any) =>
+              book.category_name === category &&
+              book.name === author &&
+              book.title === title
+          );
+        }
+        return books.filter(
+          (book: any) => book.category_name === category && book.name === author
+        );
       }
-      if (category && author && title) {
-        return this.queryBuilder
-          .leftJoin("author", "books.id", "author.book_id")
-          .leftJoin("book_category", "books.id", "book_category.book_id")
-          .leftJoin("category", "book_category.category_id", "category.id")
-          .whereLike("name", `%${author}%`)
-          .andWhereLike("category_name", `%${category}`)
-          .andWhereLike("title", `%${title}%`);
+      return books.filter((book: any) => book.category_name === category);
+    }
+
+    if (title) {
+      if (title && category) {
+        if (title && category && author) {
+          return books.filter(
+            (book: any) =>
+              book.category_name === category &&
+              book.title === title &&
+              book.name === author
+          );
+        }
+        return books.filter(
+          (book: any) => book.category_name === category && book.title === title
+        );
       }
-      return this.queryBuilder
-        .leftJoin("author", "books.id", "author.book_id")
-        .leftJoin("book_category", "books.id", "book_category.book_id")
-        .leftJoin("category", "book_category.category_id", "category.id")
-        .whereLike("category_name", `%${category}`);
+      return books.filter((book: any) => book.title === title);
     }
 
     if (author) {
-      if (author && title) {
-        return this.queryBuilder
-          .leftJoin("author", "books.id", "author.book_id")
-          .whereLike("title", `%${title}%`);
+      if (author && category) {
+        if (author && category && author) {
+          return books.filter(
+            (book: any) =>
+              book.category_name === category &&
+              book.title === title &&
+              book.name === author
+          );
+        }
+        return books.filter(
+          (book: any) => book.category_name === category && book.name === author
+        );
       }
-      if (author && title && category) {
-        return this.queryBuilder
-          .leftJoin("author", "books.id", "author.book_id")
-          .leftJoin("book_category", "books.id", "book_category.book_id")
-          .leftJoin("category", "book_category.category_id", "category.id")
-          .whereLike("name", `%${author}%`)
-          .andWhereLike("category_name", `%${category}`)
-          .andWhereLike("title", `%${title}%`);
-      }
-      return this.queryBuilder
-        .leftJoin("author", "books.id", "author.book_id")
-        .whereLike("name", `%${author}%`);
+      return books.filter((book: any) => book.name === author);
     }
 
-    return this.queryBuilder.select("*");
+    return Book.query().select("*");
   }
-  // findUserByEmail(email: string): Promise<User> {
-  //   return this.queryBuilder.where("email", "=", email).select().first();
-  // }
 }
 
 export default BookRepository;

@@ -1,6 +1,6 @@
 import { Model, RelationMappings, RelationMappingsThunk } from "objection";
-import Address from "./Address";
-import LibraryBusinessHours from "./LibraryBusinessHours";
+import Address from "../../utils/models/address.model";
+import LibraryBusinessHours from "./library_business_hours.model";
 
 class Library extends Model {
   id!: number;

@@ -15,9 +15,9 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex("library_card").del();
   await knex("library").del();
-  await knex("users").del();
+  await knex("user").del();
   await knex("address").del();
-  await knex("books").del();
+  await knex("book").del();
   await knex("author").del();
   await knex("book_category").del();
   await knex("category").del();
@@ -26,8 +26,8 @@ export async function seed(knex: Knex): Promise<void> {
     "address",
     "library",
     "library_card",
-    "users",
-    "books",
+    "user",
+    "book",
     "category",
     "book_category",
     "author"

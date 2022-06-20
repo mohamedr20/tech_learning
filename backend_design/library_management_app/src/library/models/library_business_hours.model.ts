@@ -1,5 +1,5 @@
 import { Model, RelationMappings, RelationMappingsThunk } from "objection";
-import Library from "./Library";
+import { Library } from "./index";
 
 class LibraryBusinessHours extends Model {
   id!: number;

@@ -17,7 +17,7 @@ const createDefaultColumns = (knex: Knex, table: Knex.TableBuilder) => {
   table.dateTime("updated_at").defaultTo(knex.fn.now());
 };
 
-const users: User[] = [
+const users = [
   {
     id: 1,
     email: "misse11@email.com",
@@ -29,7 +29,7 @@ const users: User[] = [
     phone: "7033593717",
     date_of_birth: new Date(),
     age: 24,
-    card_id: 1,
+    library_card_id: 1,
     address_id: 1
   },
   {
@@ -43,7 +43,7 @@ const users: User[] = [
     phone: "202-600-5012",
     date_of_birth: new Date(),
     age: 32,
-    card_id: 2,
+    library_card_id: 2,
     address_id: 2
   }
 ];

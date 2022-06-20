@@ -1,5 +1,5 @@
 import { Model, RelationMappings, RelationMappingsThunk } from "objection";
-import User from "./User";
+import User from "./user.model";
 
 class Role extends Model {
   id!: number;

@@ -196,7 +196,7 @@ export async function up(knex: Knex): Promise<void> {
 
   // A user has a one-to-many relationship with a user_fine
   // One user could have multiple user fines
-  await knex.schema.createTable("user_fine", (table) => {
+  await knex.schema.createTable("fine", (table) => {
     table.increments("id").primary().notNullable();
     table
       .integer("user_id")
@@ -204,9 +204,24 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references("id")
       .inTable("user");
-    table.string("type", 50);
+    table.string("fine_type", 50);
     table.float("amount", 2).notNullable();
     createDefaultColumns(knex, table);
+  });
+
+  await knex.schema.alterTable("user", (table) => {
+    table
+      .integer("library_card_id")
+      .unsigned()
+      .notNullable()
+      .references("id")
+      .inTable("library_card");
+    table
+      .integer("address_id")
+      .unsigned()
+      .notNullable()
+      .references("id")
+      .inTable("address");
   });
 }
 

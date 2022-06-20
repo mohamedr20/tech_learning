@@ -3,14 +3,6 @@ import UserRepository from "./user.repo";
 import dbConfig from "../../knexfile";
 import { User } from "../utils/interfaces";
 
-// interface updateUserDTO {
-//   firstName?: string;
-//   lastName?: string;
-//   email?: string;
-//   phone?: string;
-//   date_of_birth?: Date;
-// }
-
 class UserService {
   private userRepository = new UserRepository(
     knex(dbConfig["development"]),

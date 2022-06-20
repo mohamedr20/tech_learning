@@ -1,7 +1,10 @@
 import { Model, RelationMappings, RelationMappingsThunk } from "objection";
-import Address from "./Address";
-import Book from "./Book";
-import Role from "./Role";
+
+import Address from "../../utils/models/address.model";
+import Book from "../../book/models/book.model";
+import { Role } from "./index";
+import { LibraryCard } from "../../library/models/index";
+import { Fine } from "./index";
 
 class User extends Model {
   id!: number;
@@ -19,11 +22,33 @@ class User extends Model {
   static get relationMappings(): RelationMappings | RelationMappingsThunk {
     return {
       address: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: Address,
         join: {
           from: "user.address_id",
           to: "address.id"
+        }
+      },
+
+      libraryCard: {
+        relation: Model.HasOneRelation,
+        modelClass: LibraryCard,
+        join: {
+          from: "user.id",
+          to: "library_card.user_id"
+        }
+      },
+
+      books: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Book,
+        join: {
+          from: "user.id",
+          through: {
+            from: "book_item.user_id",
+            to: "book_item.book_id"
+          },
+          to: "book.id"
         }
       },
 
@@ -40,36 +65,14 @@ class User extends Model {
         }
       },
 
-      bookItems: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Book,
+      fines: {
+        relation: Model.HasManyRelation,
+        modelClass: Fine,
         join: {
           from: "user.id",
-          through: {
-            from: "book_item.user_id",
-            to: "book_item.book_id"
-          },
-          to: "book.id"
+          to: "fine.user_id"
         }
       }
-
-      // libraryCard: {
-      //   relation: Model.HasOneRelation,
-      //   //modelClass: libraryCards,
-      //   join: {
-      //     from: "user.library_card_id",
-      //     to: "library_card.id"
-      //   }
-      // }
-
-      // fines: {
-      //   relation: Model.HasManyRelation,
-      //   modelClass: UserFine,
-      //   join: {
-      //     from: 'user.id',
-      //     to: 'user_fine.user_id'
-      //   }
-      // }
     };
   }
 }

@@ -1,5 +1,5 @@
 import { Model } from "objection";
-import Book from "./Book";
+import Book from "../../book/models/book.model";
 
 class Category extends Model {
   id!: number;

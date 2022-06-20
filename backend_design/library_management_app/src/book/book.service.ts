@@ -1,6 +1,6 @@
 import dbConfig from "../../knexfile";
 import knex from "knex";
-import { Book } from "../utils/interfaces";
+import Book from "../book/models/book.model";
 import BookRepository from "./book.repo";
 import { ParsedQs } from "qs";
 import { BookSearchParams } from "./interfaces";
@@ -26,7 +26,7 @@ class BookService {
   private env = process.env.NODE_ENV || "development";
   private bookRepository = new BookRepository(
     knex(dbConfig[`${this.env}`]),
-    "books"
+    "book"
   );
 
   constructor() {}
