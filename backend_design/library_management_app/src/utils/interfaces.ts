@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Router } from "express";
 
 enum UserStatus {
   Active = "Active",
@@ -80,7 +80,12 @@ interface Category {
   category_name: string;
 }
 
+interface AuthenticatedRequest extends Request {
+  user?: Record<string, any>;
+}
+
 export {
+  AuthenticatedRequest,
   UserStatus,
   User,
   Library,

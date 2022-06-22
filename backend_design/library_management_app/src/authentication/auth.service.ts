@@ -5,6 +5,7 @@ import InvalidCredentialsException from "../exceptions/InvalidCredentialsExcepti
 import CreateUserDto from "../user/user.dto";
 import UserService from "../user/user.service";
 import LogInDtO from "./login.dto";
+import UserNotFoundException from "../exceptions/UserNotFoundException";
 
 class AuthService {
   public userService = new UserService();
@@ -35,7 +36,7 @@ class AuthService {
   public async login(userInput: LogInDtO): Promise<string> {
     const user = await this.userService.findUserByEmail(userInput.email);
 
-    if (!user) throw new UserExsistsForThisEmailException(userInput.email);
+    if (!user) throw new UserNotFoundException(userInput.email);
 
     const comparePassword = await bcrypt.compare(
       userInput.password,

@@ -26,8 +26,9 @@ export abstract class KnexRepository<T> implements Reader<T>, Writer<T> {
 
   findOne(id: string): Promise<T> {
     return this.queryBuilder
-      .select(id)
+      .select("*")
       .from(this.tableName)
+      .where("id", "=", id)
       .first() as Promise<T>;
   }
 

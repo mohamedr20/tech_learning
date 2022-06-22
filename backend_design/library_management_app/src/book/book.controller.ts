@@ -2,6 +2,8 @@ import BookService from "./book.service";
 import { NextFunction, Request, Response, Router } from "express";
 import CreateBookDto from "./book.dto";
 import validateMiddleware from "../middleware/validation.middleware";
+import authenticateUser from "../middleware/auth.middleware";
+import { AuthRequest } from "../utils/interfaces";
 
 class BookController {
   public path = "/books";
@@ -14,8 +16,8 @@ class BookController {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.getBooks);
-    this.router.get(`${this.path}/search`, this.search);
+    this.router.get(`${this.path}`, authenticateUser, this.getBooks);
+    this.router.get(`${this.path}/search`, authenticateUser, this.search);
     this.router.get(`${this.path}/bookItems/:bookId`, this.getBookItems);
     this.router.post(
       `${this.path}`,
@@ -30,7 +32,11 @@ class BookController {
     throw new Error("Method not implemented.");
   }
 
-  private search = async (req: Request, res: Response, next: NextFunction) => {
+  private search = async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     const books = await this.bookService.searchForBooks(req.query);
     return res.json({ response: books });
   };

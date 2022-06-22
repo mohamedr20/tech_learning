@@ -6,7 +6,7 @@ import User from "./models/user.model";
 class UserService {
   private userRepository = new UserRepository(
     knex(dbConfig["development"]),
-    "users"
+    "user"
   );
   constructor() {}
 

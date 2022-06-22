@@ -4,7 +4,7 @@ import KnexRepository from "../repo";
 
 class UserRepository extends KnexRepository<User> {
   constructor(public readonly knex: Knex, public readonly tableName: string) {
-    super(knex, "users");
+    super(knex, "user");
   }
 
   findUserByEmail(email: string): Promise<User> {

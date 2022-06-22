@@ -14,6 +14,10 @@ class UserController {
     this.router.get(`${this.path}/`, this.findAllUsers);
     this.router.get(`${this.path}/bookItems/:userId`, this.findCheckedOutBooks);
     this.router.get(`${this.path}/:id`, this.findUser);
+    this.router.post(
+      `$${this.path}/bookItems/reserve/:bookId`,
+      this.reserveBook
+    );
     this.router.put(`${this.path}/:id`, this.updateUser);
     this.router.delete(`${this.path}/:id`, this.deleteUser);
   }
@@ -45,6 +49,11 @@ class UserController {
   private findCheckedOutBooks = async (req: Request, res: Response) => {
     const books = await this.userService.findBooksForUser(req.params.userId);
     return res.json({ data: books }).status(200);
+  };
+
+  private reserveBook = async (req: Request, res: Response) => {
+    console.log(req.headers["authorization"]);
+    console.log("reserve hit");
   };
 
   private updateUser = async (
