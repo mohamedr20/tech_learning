@@ -1,13 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import HttpException from "../exceptions/HttpException";
 import jwt from "jsonwebtoken";
-
-interface AuthRequest extends Request {
-  user?: Record<string, any>;
-}
+import { AuthenticatedRequest } from "../utils/interfaces";
 
 const authenticateUser = async (
-  req: AuthRequest,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -21,6 +18,10 @@ const authenticateUser = async (
       req.user = user;
       next();
     });
+  } else {
+    next(
+      new HttpException(403, "Need to provide credentials to access resource")
+    );
   }
 };
 

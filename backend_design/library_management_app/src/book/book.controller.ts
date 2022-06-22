@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import CreateBookDto from "./book.dto";
 import validateMiddleware from "../middleware/validation.middleware";
 import authenticateUser from "../middleware/auth.middleware";
-import { AuthRequest } from "../utils/interfaces";
+import { AuthenticatedRequest } from "../utils/interfaces";
 
 class BookController {
   public path = "/books";
@@ -33,7 +33,7 @@ class BookController {
   }
 
   private search = async (
-    req: AuthRequest,
+    req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
   ) => {
